@@ -212,6 +212,71 @@ class UserController extends Controller
     }
 
     /**
+     * Reset password user khusus oleh Kasubbag TU (atau admin utama).
+     * Solusi untuk jaringan kantor yang memblokir port SMTP email.
+     */
+    public function resetPassword(Request $request, User $user)
+    {
+        // Otorisasi: Khusus Kasubbag TU atau admin
+        if (!in_array(auth()->user()->role, ['admin_kasubbag_tu', 'admin'])) {
+            abort(403, 'Hanya Kasubbag TU yang memiliki wewenang untuk mereset password pengguna.');
+        }
+
+        // Tidak boleh reset password akun sendiri lewat fitur ini
+        if ($user->id === auth()->id()) {
+            return redirect()->back()
+                ->with('error', 'Anda tidak dapat mereset password akun sendiri melalui menu ini.');
+        }
+
+        $request->validate([
+            'password' => ['required', 'string', 'min:8'],
+        ], [
+            'password.required' => 'Password baru harus diisi.',
+            'password.min'      => 'Password baru minimal 8 karakter.',
+        ]);
+
+        $newPassword = $request->password;
+
+        $user->update([
+            'password' => Hash::make($newPassword),
+        ]);
+
+        // Hapus session aktif user jika session driver menggunakan database
+        if (config('session.driver') === 'database') {
+            try {
+                DB::table('sessions')->where('user_id', $user->id)->delete();
+            } catch (\Throwable $e) {
+                // Abaikan jika tabel sessions tidak ada
+            }
+        }
+
+        // Catat activity log jika class tersedia
+        try {
+            \App\Models\ActivityLog::create([
+                'user_id'     => auth()->id(),
+                'action'      => 'update',
+                'model_type'  => 'User',
+                'model_id'    => $user->id,
+                'description' => "Reset password akun {$user->name} ({$user->email}) oleh Kasubbag TU: " . auth()->user()->name,
+                'ip_address'  => $request->ip(),
+                'user_agent'  => $request->userAgent(),
+            ]);
+        } catch (\Throwable $e) {
+            // Abaikan jika log gagal
+        }
+
+        \Illuminate\Support\Facades\Log::info("Password user {$user->name} ({$user->id}) berhasil di-reset oleh Kasubbag TU " . auth()->user()->name);
+
+        return redirect()->back()->with([
+            'success'        => "Password untuk pengguna '{$user->name}' berhasil di-reset!",
+            'reset_success'  => true,
+            'reset_name'     => $user->name,
+            'reset_email'    => $user->email,
+            'reset_password' => $newPassword,
+        ]);
+    }
+
+    /**
      * Delete a user
      */
     public function destroy(User $user)
