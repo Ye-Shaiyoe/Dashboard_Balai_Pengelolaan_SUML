@@ -1,7 +1,7 @@
 # 🗄️ Modul 04: Basis Data & Skema Model (ERD)
 ### Sistem Informasi Dashboard TU BP SUML
 
-Dokumen ini menyediakan spesifikasi basis data komprehensif, diagram relasi antar tabel (*Entity-Relationship Diagram*), serta kamus data untuk seluruh entitas sistem.
+Dokumen ini menyediakan spesifikasi basis data komprehensif berbasis **PostgreSQL**, diagram relasi antar tabel (*Entity-Relationship Diagram*), serta kamus data untuk seluruh entitas sistem.
 
 ---
 
@@ -20,112 +20,112 @@ erDiagram
     SURATS ||--o{ SURAT_DELETE_REQUESTS : "dihapus_melalui"
 
     USERS {
-        bigint id PK
-        string uuid UK
-        string name
-        string email UK
-        string password
-        string role "user, admin_kasubbag_tu, dll"
-        string nip
-        string nip_hash UK "HMAC SHA-256"
+        bigserial id PK
+        uuid uuid UK
+        varchar name
+        varchar email UK
+        varchar password
+        varchar role "user, admin_kasubbag_tu, dll"
+        varchar nip
+        char nip_hash UK "HMAC SHA-256"
         boolean role_selected
-        string profile_photo
-        string signature_path "Private TTE image"
-        string signature_pin "Hashed PIN"
-        string switch_token
-        datetime switch_token_expires_at
-        datetime created_at
+        varchar profile_photo
+        varchar signature_path "Private TTE image"
+        varchar signature_pin "Hashed PIN"
+        varchar switch_token
+        timestamp switch_token_expires_at
+        timestamp created_at
     }
 
     SURATS {
-        bigint id PK
-        string uuid UK
+        bigserial id PK
+        uuid uuid UK
         bigint user_id FK
-        string judul
-        string jenis "nota_dinas, surat_dinas, dll"
-        string sifat "biasa, penting, rahasia, segera"
-        string tujuan
+        varchar judul
+        varchar jenis "nota_dinas, surat_dinas, dll"
+        varchar sifat "biasa, penting, rahasia, segera"
+        varchar tujuan
         text catatan_pengusul
-        string file_word "Path docx"
-        string file_lampiran "Path lampiran"
-        string nomor_surat
+        varchar file_word "Path docx"
+        varchar file_lampiran "Path lampiran"
+        varchar nomor_surat
         date tanggal_surat
-        int tahap_sekarang "1 s/d 10"
-        string status "draft, proses, revisi, selesai, ditolak"
+        smallint tahap_sekarang "1 s/d 10"
+        varchar status "draft, proses, revisi, selesai, ditolak"
         boolean perlu_follow_up
         text catatan_follow_up
-        datetime deadline_sla
-        string alasan_keterlambatan
-        datetime disetujui_pada
-        datetime file_dihapus_pada
-        datetime file_expires_at
+        timestamp deadline_sla
+        varchar alasan_keterlambatan
+        timestamp disetujui_pada
+        timestamp file_dihapus_pada
+        timestamp file_expires_at
         boolean status_revisi
-        int revisi_count
-        datetime revisi_uploaded_at
-        tinyint rating "1 - 5 bintang"
-        datetime created_at
+        integer revisi_count
+        timestamp revisi_uploaded_at
+        smallint rating "1 - 5 bintang"
+        timestamp created_at
     }
 
     SURAT_TAHAPANS {
-        bigint id PK
+        bigserial id PK
         bigint surat_id FK
-        int tahap "1 s/d 10"
-        string nama_tahap
-        string status "menunggu, proses, selesai, ditolak"
+        smallint tahap "1 s/d 10"
+        varchar nama_tahap
+        varchar status "menunggu, proses, selesai, ditolak"
         bigint diproses_oleh FK "users.id"
         text catatan
-        datetime selesai_pada
-        datetime created_at
+        timestamp selesai_pada
+        timestamp created_at
     }
 
     SURAT_DELETE_REQUESTS {
-        bigint id PK
+        bigserial id PK
         bigint surat_id FK
         bigint user_id FK
         bigint admin_id FK
         text alasan
-        string status "pending, disetujui, ditolak"
+        varchar status "pending, disetujui, ditolak"
         text admin_catatan
-        datetime admin_approved_at
-        datetime created_at
+        timestamp admin_approved_at
+        timestamp created_at
     }
 
     ASPIRASIS {
-        bigint id PK
-        string uuid UK
+        bigserial id PK
+        uuid uuid UK
         bigint user_id FK
-        string judul
+        varchar judul
         text isi
-        string tujuan "admin, it_support"
-        string kategori "saran, keluhan, pertanyaan"
-        string status "baru, diproses, selesai"
+        varchar tujuan "admin, it_support"
+        varchar kategori "saran, keluhan, pertanyaan"
+        varchar status "baru, diproses, selesai"
         text balasan
-        datetime dibalas_at
-        datetime created_at
+        timestamp dibalas_at
+        timestamp created_at
     }
 
     IT_SUPPORT_TICKETS {
-        bigint id PK
+        bigserial id PK
         bigint admin_id FK
-        string subjek
-        string kategori
+        varchar subjek
+        varchar kategori
         text detail
-        string status "open, resolved, closed"
+        varchar status "open, resolved, closed"
         text catatan_it
-        datetime created_at
+        timestamp created_at
     }
 
     ACTIVITY_LOGS {
-        bigint id PK
+        bigserial id PK
         bigint user_id FK
-        string action "create, update, approve, reject, dll"
-        string model_type
+        varchar action "create, update, approve, reject, dll"
+        varchar model_type
         bigint model_id
         text description
-        json changes "before vs after"
-        string ip_address
+        jsonb changes "before vs after"
+        varchar ip_address
         text user_agent
-        datetime created_at
+        timestamp created_at
     }
 ```
 

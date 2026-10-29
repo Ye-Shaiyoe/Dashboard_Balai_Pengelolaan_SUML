@@ -32,7 +32,7 @@ Folder `docs/` ini tersusun atas modul-modul dokumentasi teknis dan fungsional b
 ## 💻 Ringkasan Spesifikasi Teknis
 
 - **Framework**: Laravel 12 (PHP 8.2+)
-- **Database**: MySQL / MariaDB (Mendukung SQLite untuk pengujian)
+- **Database**: PostgreSQL 14+ / 16+ (mendukung pgsql PDO)
 - **Frontend**: Blade Templating, Tailwind CSS, Vanilla JS / Alpine JS, Bootstrap Icons, Chart.js
 - **Pengolah Berkas**:
   - `phpoffice/phpword`: Pemrosesan dan manipulasi dokumen Word (.docx)

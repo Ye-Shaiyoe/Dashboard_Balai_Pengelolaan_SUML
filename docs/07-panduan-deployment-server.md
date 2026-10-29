@@ -9,16 +9,30 @@ Dokumen ini adalah panduan komprehensif bagi Administrator Sistem (Sysadmin/DevO
 
 - **Sistem Operasi**: Ubuntu Server 22.04 LTS / 24.04 LTS
 - **PHP**: Versi 8.2 atau 8.3 dengan ekstensi:
-  - `php-fpm`, `php-mysql`, `php-mbstring`, `php-xml`, `php-zip`, `php-gd`, `php-curl`, `php-bcmath`
-- **Basis Data**: MySQL 8.0+ atau MariaDB 10.6+
+  - `php-fpm`, `php-pgsql`, `php-mbstring`, `php-xml`, `php-zip`, `php-gd`, `php-curl`, `php-bcmath`
+- **Basis Data**: PostgreSQL 14+ / 16+
 - **Web Server**: Nginx (disarankan) atau Apache2
 - **Tools**: Composer 2.x, Git, Node.js (v18+) & NPM
 
 Perintah instalasi paket dasar di Ubuntu:
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y nginx mysql-server git curl unzip
-sudo apt install -y php8.2-fpm php8.2-cli php8.2-mysql php8.2-mbstring php8.2-xml php8.2-zip php8.2-gd php8.2-curl
+sudo apt install -y nginx postgresql postgresql-contrib git curl unzip
+sudo apt install -y php8.2-fpm php8.2-cli php8.2-pgsql php8.2-mbstring php8.2-xml php8.2-zip php8.2-gd php8.2-curl
+```
+
+### Konfigurasi Database PostgreSQL di Server
+```bash
+# Masuk ke prompt postgres
+sudo -u postgres psql
+
+# Buat database dan user
+CREATE DATABASE dashboard_tubpsuml;
+CREATE USER user_bpsuml WITH ENCRYPTED PASSWORD 'password_rahasia_anda';
+GRANT ALL PRIVILEGES ON DATABASE dashboard_tubpsuml TO user_bpsuml;
+\c dashboard_tubpsuml
+GRANT ALL ON SCHEMA public TO user_bpsuml;
+\q
 ```
 
 ---
@@ -46,12 +60,12 @@ APP_ENV=production
 APP_DEBUG=false
 APP_URL=http://192.168.x.x   # Atau domain internal kantor, misal: http://persuratan.bpsuml.lan
 
-DB_CONNECTION=mysql
+DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
-DB_PORT=3306
+DB_PORT=5432
 DB_DATABASE=dashboard_tubpsuml
 DB_USERNAME=user_bpsuml
-DB_PASSWORD=password_database_anda
+DB_PASSWORD=password_rahasia_anda
 
 # CATATAN SMTP JARINGAN LAN:
 # Karena port keluar SMTP diblokir firewall kantor, gunakan driver log:

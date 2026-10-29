@@ -33,7 +33,7 @@ flowchart TD
     end
 
     subgraph Database["Database Server"]
-        MySQL[("MySQL / MariaDB")]
+        PostgreSQL[("PostgreSQL (pgsql)")]
     end
 
     subgraph BackgroundJob["Background & Scheduled Tasks"]
@@ -48,7 +48,7 @@ flowchart TD
     Controllers --> TraitsHelper
     Controllers --> Models
     Controllers --> StorageLayer
-    Models -->|Queries / Transactions| MySQL
+    Models -->|Queries / Transactions| PostgreSQL
     Cron --> Worker
     Worker --> Models
     Worker --> StorageLayer
@@ -69,7 +69,7 @@ flowchart TD
 - **`chart.js`**: Pustaka visualisasi grafik di sisi browser untuk menampilkan statistik beban kerja persuratan, sebaran jenis surat, dan pemenuhan SLA.
 
 ### C. Database & Caching
-- **MySQL 8.0+ / MariaDB 10.6+**: Penyimpanan data relasional dengan indeks performa untuk pencarian cepat status surat, SLA, dan aktivitas log.
+- **PostgreSQL 14+ / 16+**: Menggunakan driver PDO PostgreSQL (`pgsql`) dengan keunggulan integritas relasional kuat, JSON/JSONB support untuk audit changes di `activity_logs`, serta indexing performa tinggi (B-Tree & Hash index).
 - **Cache & Session**: Menggunakan driver database/file untuk menjaga konsistensi state sesi login di lingkungan jaringan tertutup.
 
 ---
