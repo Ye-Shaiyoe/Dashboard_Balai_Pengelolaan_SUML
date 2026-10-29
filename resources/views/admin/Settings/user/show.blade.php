@@ -5,6 +5,31 @@
 @section('content')
 <div style="display: flex; flex-direction: column; gap: 24px;">
 
+    {{-- FLASH NOTIFIKASI RESET PASSWORD --}}
+    @if(session('reset_success'))
+        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 16px 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                    <span style="font-size: 24px; line-height: 1;">✅</span>
+                    <div>
+                        <h4 style="margin: 0 0 6px 0; color: #15803d; font-size: 15px; font-weight: 700;">Password Berhasil Direset!</h4>
+                        <p style="margin: 0 0 8px 0; font-size: 13px; color: #166534;">
+                            Password untuk <strong>{{ session('reset_name') }}</strong> ({{ session('reset_email') }}) telah diperbarui. Silakan berikan password baru ini kepada pegawai:
+                        </p>
+                        <div style="display: inline-flex; align-items: center; gap: 10px; background: white; border: 2px dashed #22c55e; border-radius: 8px; padding: 8px 14px;">
+                            <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #6b7280; letter-spacing: 0.05em;">Password Baru:</span>
+                            <code id="passwordResetBaru" style="font-size: 15px; font-weight: 700; color: #047857; letter-spacing: 1px;">{{ session('reset_password') }}</code>
+                            <button type="button" onclick="salinPasswordReset()" style="background: #15803d; color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                                📋 Salin Password
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" onclick="this.parentElement.parentElement.remove()" style="background: transparent; border: none; color: #9ca3af; font-size: 20px; cursor: pointer; line-height: 1;">&times;</button>
+            </div>
+        </div>
+    @endif
+
     {{-- BACK BUTTON & HEADER --}}
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 20px;">
@@ -25,9 +50,19 @@
                 </p>
             </div>
         </div>
-        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary" style="border-radius: 12px; padding: 10px 20px;">
-            ← Kembali
-        </a>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            @if(in_array(auth()->user()->role, ['admin_kasubbag_tu', 'admin']) && $user->id !== auth()->id())
+                <button type="button" 
+                        onclick="bukaModalResetPassword('{{ $user->uuid }}', '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
+                        class="btn" 
+                        style="background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 12px; padding: 10px 18px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                    🔄 Reset Password
+                </button>
+            @endif
+            <a href="{{ route('admin.users.index') }}" class="btn btn-secondary" style="border-radius: 12px; padding: 10px 20px;">
+                ← Kembali
+            </a>
+        </div>
     </div>
 
     {{-- USER STATISTICS --}}
@@ -217,7 +252,123 @@
         @endif
     </div>
 
+    {{-- MODAL RESET PASSWORD (KHUSUS KASUBBAG TU / ADMIN) --}}
+    @if(in_array(auth()->user()->role, ['admin_kasubbag_tu', 'admin']))
+        <div id="modalResetPassword" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
+            <div style="background: white; border-radius: 16px; max-width: 460px; width: 100%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); overflow: hidden; animation: modalPop 0.2s ease-out;">
+                <div style="padding: 20px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #fafafa;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 20px;">🔐</span>
+                        <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #111827;">Reset Password Pegawai</h3>
+                    </div>
+                    <button type="button" onclick="tutupModalResetPassword()" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #9ca3af; line-height: 1;">&times;</button>
+                </div>
+                <form id="formResetPassword" method="POST" action="">
+                    @csrf
+                    <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                        <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; font-size: 12px; color: #92400e; line-height: 1.5;">
+                            ⚠️ <strong>Otoritas Kasubbag TU</strong>: Password pegawai akan langsung diganti di database tanpa verifikasi email (solusi SMTP LAN terblokir).
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 600; color: #4b5563;">Pegawai yang di-reset:</label>
+                            <div style="margin-top: 4px; padding: 8px 12px; background: #f3f4f6; border-radius: 6px; font-size: 13px;">
+                                <strong id="resetTargetName">-</strong>
+                                <div id="resetTargetEmail" style="color: #6b7280; font-size: 12px;">-</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label for="inputPasswordBaru" style="font-size: 12px; font-weight: 600; color: #374151;">Password Baru:</label>
+                                <button type="button" onclick="isiPasswordDefault()" style="background: none; border: none; color: #4361ee; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0;">
+                                    Pakai Default (Bpsuml2026!)
+                                </button>
+                            </div>
+                            <div style="position: relative;">
+                                <input type="password" id="inputPasswordBaru" name="password" required minlength="8"
+                                       placeholder="Minimal 8 karakter"
+                                       style="width: 100%; box-sizing: border-box; padding: 10px 40px 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: monospace;">
+                                <button type="button" onclick="toggleLihatResetPassword()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #6b7280;">
+                                    👁️
+                                </button>
+                            </div>
+                            <small style="color: #6b7280; font-size: 11px; margin-top: 4px; display: block;">
+                                Sarankan pegawai untuk langsung mengganti password setelah berhasil login.
+                            </small>
+                        </div>
+                    </div>
+                    <div style="padding: 16px 24px; background: #f9fafb; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" onclick="tutupModalResetPassword()" class="btn btn-secondary" style="border-radius: 8px; padding: 8px 16px; font-size: 13px;">
+                            Batal
+                        </button>
+                        <button type="submit" class="btn btn-danger" style="border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; background: #dc2626; border-color: #dc2626;">
+                            Simpan Password Baru
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
 </div>
+
+<script>
+    function bukaModalResetPassword(userUuid, userName, userEmail) {
+        var modal = document.getElementById('modalResetPassword');
+        var form = document.getElementById('formResetPassword');
+        var nameSpan = document.getElementById('resetTargetName');
+        var emailSpan = document.getElementById('resetTargetEmail');
+        var passInput = document.getElementById('inputPasswordBaru');
+
+        if (!modal || !form) return;
+
+        form.action = "{{ url('Admin/Settings/Users') }}/" + userUuid + "/reset-password";
+        nameSpan.textContent = userName;
+        emailSpan.textContent = userEmail;
+        passInput.value = 'Bpsuml2026!';
+        passInput.type = 'text';
+
+        modal.style.display = 'flex';
+    }
+
+    function tutupModalResetPassword() {
+        var modal = document.getElementById('modalResetPassword');
+        if (modal) modal.style.display = 'none';
+    }
+
+    function isiPasswordDefault() {
+        var passInput = document.getElementById('inputPasswordBaru');
+        if (passInput) passInput.value = 'Bpsuml2026!';
+    }
+
+    function toggleLihatResetPassword() {
+        var passInput = document.getElementById('inputPasswordBaru');
+        if (!passInput) return;
+        passInput.type = passInput.type === 'password' ? 'text' : 'password';
+    }
+
+    function salinPasswordReset() {
+        var el = document.getElementById('passwordResetBaru');
+        if (!el) return;
+        navigator.clipboard.writeText(el.textContent.trim()).then(function() {
+            alert('Password berhasil disalin ke clipboard!');
+        }).catch(function() {
+            var temp = document.createElement('textarea');
+            temp.value = el.textContent.trim();
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            alert('Password berhasil disalin ke clipboard!');
+        });
+    }
+
+    window.onclick = function(event) {
+        var modal = document.getElementById('modalResetPassword');
+        if (event.target === modal) {
+            tutupModalResetPassword();
+        }
+    };
+</script>
 
 <style>
     @media (max-width: 768px) {
