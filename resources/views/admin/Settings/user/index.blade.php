@@ -92,7 +92,35 @@
     <div class="card">
 
         {{-- Flash messages --}}
-        @if(session('success'))
+        @if(session('reset_success'))
+            <div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1.5px solid #fdba74; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.08);">
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <div style="width: 40px; height: 40px; border-radius: 10px; background: #ea580c; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+                            🔑
+                        </div>
+                        <div>
+                            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #9a3412;">
+                                Password Berhasil Di-reset oleh Kasubbag TU!
+                            </h4>
+                            <p style="margin: 3px 0 0; font-size: 12.5px; color: #7c2d12;">
+                                Akun: <strong>{{ session('reset_name') }}</strong> ({{ session('reset_email') }})
+                            </p>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+                                <span style="font-size: 12px; font-weight: 600; color: #9a3412;">Password Baru:</span>
+                                <code id="textPasswordBaru" style="background: white; border: 1px solid #fed7aa; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 13.5px; color: #c2410c; font-family: monospace;">{{ session('reset_password') }}</code>
+                                <button type="button" onclick="salinPasswordReset()" id="btnSalinPassword"
+                                        style="padding: 4px 10px; font-size: 11.5px; font-weight: 600; border-radius: 6px; background: #ea580c; color: white; border: none; cursor: pointer; transition: background .15s;">
+                                    📋 Salin Password
+                                </button>
+                                <span style="font-size: 11px; color: #9a3412; opacity: 0.85;">(Silakan salin dan berikan password ini kepada pegawai bersangkutan)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="this.closest('div').parentElement.remove()" style="background: none; border: none; font-size: 16px; color: #9a3412; cursor: pointer; padding: 2px 6px;">✕</button>
+                </div>
+            </div>
+        @elseif(session('success'))
             <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 16px; font-size:13px; color:#166534; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
                 ✅ {{ session('success') }}
             </div>
@@ -168,6 +196,15 @@
                                             </a>
                                         @endif
                                         @if($user && $user->id !== auth()->id())
+                                            {{-- Tombol Reset Password (Khusus Kasubbag TU & Admin) --}}
+                                            @if(in_array(auth()->user()->role, ['admin_kasubbag_tu', 'admin']))
+                                                <button type="button" class="btn btn-sm" title="Reset Password Pegawai (Kasubbag TU)"
+                                                    style="color: #ea580c; background: #fff7ed; border-color: #fed7aa;"
+                                                    onclick="bukaModalResetPassword('{{ $user->uuid }}', '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')">
+                                                    🔄
+                                                </button>
+                                            @endif
+
                                             {{-- Tombol Ubah Role (untuk user biasa & IT Support) --}}
                                             @if($user->role === 'user' || $user->role === 'it_support')
                                                 <button type="button" class="btn btn-sm" title="Ubah Role"
@@ -274,6 +311,56 @@
         display: none;
     }
 </style>
+
+{{-- ══ Modal Reset Password (Khusus Kasubbag TU) ══ --}}
+@if(in_array(auth()->user()->role, ['admin_kasubbag_tu', 'admin']))
+<div id="modalResetPassword" class="modal-backdrop" onclick="if(event.target===this) tutupModalResetPassword()">
+    <div class="modal-box">
+        <div class="modal-header" style="background: #fff7ed; border-bottom: 1px solid #fed7aa;">
+            <h3 style="color: #9a3412; display: flex; align-items: center; gap: 8px;">🔄 Reset Password Pengguna</h3>
+            <button type="button" class="modal-close" onclick="tutupModalResetPassword()">✕</button>
+        </div>
+
+        <form method="POST" id="formResetPassword">
+            @csrf
+            <div class="modal-body">
+                <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 14px; font-size:12px; color:#1e40af;">
+                    <div>👤 Pegawai: <strong id="labelResetNama">—</strong></div>
+                    <div style="font-size:11px; color:#3b82f6; margin-top:3px;">📧 Email: <span id="labelResetEmail">—</span></div>
+                </div>
+
+                <div style="background:#fffbeb; border:1px solid #fef3c7; border-radius:8px; padding:10px 12px; font-size:11.5px; color:#92400e; line-height: 1.5;">
+                    💡 <em>Fitur ini diperuntukkan khusus Kasubbag TU untuk membantu pegawai yang lupa password di jaringan LAN kantor tanpa ketergantungan kirim email SMTP.</em>
+                </div>
+
+                <div class="mf-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label class="mf-label" for="reset_password_input">Password Baru <span style="color:#dc2626">*</span></label>
+                        <button type="button" onclick="isiPasswordDefault()" style="background:none; border:none; color:#ea580c; font-size:11px; font-weight:600; cursor:pointer; text-decoration:underline;">
+                            Pakai Default (Bpsuml2026!)
+                        </button>
+                    </div>
+                    <div style="position:relative;">
+                        <input class="mf-input" id="reset_password_input" type="text" name="password" required minlength="8"
+                               placeholder="Minimal 8 karakter" value="Bpsuml2026!" style="padding-right: 40px; font-family: monospace; font-size: 13.5px; letter-spacing: 0.5px;">
+                        <button type="button" onclick="toggleLihatResetPassword(this)" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:14px;">
+                            👁️
+                        </button>
+                    </div>
+                    <div class="mf-hint">Kasubbag TU dapat menentukan password custom atau menggunakan password default di atas.</div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="background:#f9fafb;">
+                <button type="button" class="btn" onclick="tutupModalResetPassword()">Batal</button>
+                <button type="submit" class="btn" id="btnSubmitResetPassword" style="background:#ea580c; color:#fff; border:none; font-weight: 600;">
+                    🔄 Reset Password Sekarang
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
 
 {{-- ══ Modal Ubah Role ══ --}}
 <div id="modalUbahRole" class="modal-backdrop" onclick="if(event.target===this) tutupModalRole()">
@@ -480,5 +567,65 @@
         btn.disabled = true;
         btn.textContent = '⏳ Memproses...';
     });
+
+    // ── Modal Reset Password (Kasubbag TU) ──
+    function bukaModalResetPassword(uuid, nama, email) {
+        document.getElementById('labelResetNama').textContent = nama;
+        document.getElementById('labelResetEmail').textContent = email;
+        document.getElementById('reset_password_input').value = 'Bpsuml2026!';
+        
+        const baseUrl = '{{ url("Admin/Settings/Users") }}';
+        document.getElementById('formResetPassword').action = baseUrl + '/' + uuid + '/reset-password';
+        document.getElementById('modalResetPassword').style.display = 'flex';
+    }
+
+    function tutupModalResetPassword() {
+        const modal = document.getElementById('modalResetPassword');
+        if (modal) modal.style.display = 'none';
+    }
+
+    function isiPasswordDefault() {
+        const input = document.getElementById('reset_password_input');
+        if (input) input.value = 'Bpsuml2026!';
+    }
+
+    function toggleLihatResetPassword(btn) {
+        const input = document.getElementById('reset_password_input');
+        if (!input) return;
+        if (input.type === 'text') {
+            input.type = 'password';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'text';
+            btn.textContent = '👁️';
+        }
+    }
+
+    const formResetPw = document.getElementById('formResetPassword');
+    if (formResetPw) {
+        formResetPw.addEventListener('submit', function () {
+            const btn = document.getElementById('btnSubmitResetPassword');
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '⏳ Memproses Reset...';
+            }
+        });
+    }
+
+    function salinPasswordReset() {
+        const textEl = document.getElementById('textPasswordBaru');
+        if (!textEl) return;
+        const text = textEl.innerText.trim();
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.getElementById('btnSalinPassword');
+            if (btn) {
+                const oldText = btn.innerText;
+                btn.innerText = '✅ Tersalin!';
+                setTimeout(() => { btn.innerText = oldText; }, 2500);
+            }
+        }).catch(() => {
+            alert('Password: ' + text);
+        });
+    }
 </script>
 @endsection
