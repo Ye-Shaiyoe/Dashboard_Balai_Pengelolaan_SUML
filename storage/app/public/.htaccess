@@ -1,0 +1,22 @@
+# Folder ini berisi file yang diunggah pengguna dan dapat diakses publik
+# melalui symlink/junction `public/storage`.
+#
+# Jangan pernah mengizinkan web server mengeksekusi file di sini.
+# Ini lapisan pertahanan kedua (defense-in-depth) selain validasi upload
+# di sisi aplikasi: seandainya ada file non-gambar yang lolos, file tersebut
+# tetap tidak bisa dijalankan sebagai script.
+
+Options -Indexes
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "(?i)\.(php|phtml|php[0-9]?|phar|pl|py|sh|cgi|shtml|asp|aspx|jsp)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    <FilesMatch "(?i)\.(php|phtml|php[0-9]?|phar|pl|py|sh|cgi|shtml|asp|aspx|jsp)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
