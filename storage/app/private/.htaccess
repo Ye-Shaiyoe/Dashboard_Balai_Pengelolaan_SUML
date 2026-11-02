@@ -1,0 +1,15 @@
+# Dokumen surat dan tanda tangan TTE disimpan di folder private ini.
+# Folder ini TIDAK boleh diakses langsung lewat web server; akses hanya
+# melalui controller yang memeriksa autentikasi & otorisasi.
+#
+# File ini adalah pengaman tambahan bila DocumentRoot salah diarahkan ke
+# root project (bukan ke folder `public`).
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
