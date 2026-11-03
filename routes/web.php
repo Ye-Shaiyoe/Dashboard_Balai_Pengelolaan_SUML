@@ -120,7 +120,9 @@ Route::prefix('Admin')->middleware(['auth', 'verified', 'admin'])->name('admin.'
         Route::get('/Surat/{surat}', [SuratController::class, 'show'])->name('surat.show');
         Route::post('/Surat/{surat}/setujui', [SuratController::class, 'setujui'])->name('surat.setujui');
         Route::post('/Surat/{surat}/tolak', [SuratController::class, 'tolak'])->name('surat.tolak');
-        Route::post('/Surat/{surat}/upload-file-admin', [SuratController::class, 'uploadFileAdmin'])->name('surat.uploadFileAdmin');
+        Route::post('/Surat/{surat}/upload-file-admin', [SuratController::class, 'uploadFileAdmin'])
+            ->middleware('throttle:upload')
+            ->name('surat.uploadFileAdmin');
         Route::post('/Surat/delete-request/{deleteRequest}/approve', [SuratController::class, 'approveDelete'])->name('surat.approveDelete');
         Route::post('/Surat/delete-request/{deleteRequest}/reject', [SuratController::class, 'rejectDelete'])->name('surat.rejectDelete');
 
@@ -154,7 +156,9 @@ Route::prefix('Admin')->middleware(['auth', 'verified', 'admin'])->name('admin.'
 
         Route::get('/Template', [TemplateSuratController::class, 'index'])->name('template.index');
         Route::get('/Template/download/{nama}', [TemplateSuratController::class, 'download'])->name('template.download');
-        Route::post('/Template', [TemplateSuratController::class, 'store'])->name('template.store');
+        Route::post('/Template', [TemplateSuratController::class, 'store'])
+            ->middleware('throttle:upload')
+            ->name('template.store');
         Route::delete('/Template', [TemplateSuratController::class, 'destroy'])->name('template.destroy');
 
         // Settings Group
@@ -171,9 +175,15 @@ Route::prefix('Admin')->middleware(['auth', 'verified', 'admin'])->name('admin.'
 
             // Log System admin 
             Route::get('/Logs', [\App\Http\Controllers\Admin\LogController::class, 'index'])->name('logs.index');
-            Route::get('/Logs/download/{file}', [\App\Http\Controllers\Admin\LogController::class, 'download'])->name('logs.download');
-            Route::post('/Logs/clear/{file}', [\App\Http\Controllers\Admin\LogController::class, 'clear'])->name('logs.clear');
-            Route::delete('/Logs/delete/{file}', [\App\Http\Controllers\Admin\LogController::class, 'delete'])->name('logs.delete');
+            Route::get('/Logs/download/{file}', [\App\Http\Controllers\Admin\LogController::class, 'download'])
+                ->where('file', '[A-Za-z0-9._-]+')
+                ->name('logs.download');
+            Route::post('/Logs/clear/{file}', [\App\Http\Controllers\Admin\LogController::class, 'clear'])
+                ->where('file', '[A-Za-z0-9._-]+')
+                ->name('logs.clear');
+            Route::delete('/Logs/delete/{file}', [\App\Http\Controllers\Admin\LogController::class, 'delete'])
+                ->where('file', '[A-Za-z0-9._-]+')
+                ->name('logs.delete');
 
             // Manajemen File Fisik Surat
             Route::get('/File-Surat', [\App\Http\Controllers\Admin\FileSuratController::class, 'index'])->name('file.index');
@@ -225,11 +235,18 @@ Route::middleware(['auth', 'verified'])->prefix('notif')->name('notif.')->group(
 // ===== PROFILE (Breeze) =====
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->middleware('throttle:upload')
+        ->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::delete('/profile/sessions/{sessionId}', [ProfileController::class, 'revokeSession'])->name('profile.sessions.revoke');
     Route::post('/profile/sessions/revoke-others', [ProfileController::class, 'revokeAllOtherSessions'])->name('profile.sessions.revoke-others');
-    Route::patch('/profile/tte', [ProfileController::class, 'updateTte'])->name('profile.tte.update');
+    Route::patch('/profile/tte', [ProfileController::class, 'updateTte'])
+        ->middleware('throttle:upload')
+        ->name('profile.tte.update');
+
+    // TTE disimpan di disk private & hanya bisa diakses lewat route ini.
+    Route::get('/profile/signature/{user?}', [ProfileController::class, 'signature'])->name('profile.signature');
 });
 
 require __DIR__ . '/auth.php';
