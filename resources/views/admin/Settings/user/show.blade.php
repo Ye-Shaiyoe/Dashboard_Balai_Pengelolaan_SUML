@@ -104,7 +104,7 @@
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                     <label style="font-weight: 600; font-size: 13px; color: #4b5563;">Pratinjau Tanda Tangan</label>
                     <div style="border: 2px dashed #cbd5e1; border-radius: 8px; padding: 16px; background: white; display: flex; align-items: center; justify-content: center; min-height: 180px;">
-                        <img src="{{ Storage::url($user->signature_path) }}" alt="Tanda Tangan {{ $user->name }}" 
+                        <img src="{{ route('profile.signature', $user) }}" alt="Tanda Tangan {{ $user->name }}" 
                              style="max-width: 280px; max-height: 160px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
                     </div>
                     <p style="font-size: 12px; color: #6b7280; margin: 0;">
@@ -141,7 +141,7 @@
                         <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #1f2937;">📋 Informasi File</h4>
                         <p style="font-size: 12px; color: #6b7280; margin: 0;">
                             <strong>Format:</strong> PNG (Transparent)<br>
-                            <strong>Path:</strong> <code style="background: #f3f4f6; padding: 2px 4px; border-radius: 3px; font-size: 11px;">{{ $user->signature_path }}</code><br>
+                            <strong>Path:</strong> <code style="background: #f3f4f6; padding: 2px 4px; border-radius: 3px; font-size: 11px;">{{ basename($user->signature_path) }}</code><br>
                             <strong>Ukuran:</strong> Variable (disesuaikan pengguna)<br>
                             <strong>Keamanan:</strong> Private Storage (tidak accessible publik)
                         </p>
