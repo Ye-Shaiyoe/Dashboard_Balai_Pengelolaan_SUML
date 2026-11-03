@@ -75,7 +75,9 @@ docs/
     ├── 03-konfigurasi-web-server-nginx.md                # Konfigurasi vhost Nginx, PHP-FPM socket, upload limit 30M
     ├── 04-manajemen-hak-akses-storage.md                 # Kepemilikan www-data, chmod 775 storage & bootstrap/cache, proteksi TTE
     ├── 05-prosedur-update-produksi-git-pull.md           # Git pull checklist produksi: optimize:clear, cache rebuild, OPcache restart
-    └── 06-troubleshooting-lingkungan-lan.md              # Solusi error 500, port SMTP terblokir, broken storage link, cache browser
+    ├── 06-troubleshooting-lingkungan-lan.md              # Solusi error 500, port SMTP terblokir, broken storage link, cache browser
+    ├── 07-audit-keamanan-file-upload.md                  # Audit RCE/path traversal, pengamanan TTE, checklist deployment
+    └── 08-checklist-uji-pra-deploy.md                    # Checklist uji manual & otomatis sebelum/sesudah deploy
 ```
 
 ---
@@ -105,6 +107,8 @@ docs/
   - Pengaturan automasi cron server: [Konfigurasi Crontab Linux](06-automasi-dan-scheduler/03-konfigurasi-crontab-linux.md)
   - Setup instalasi dan update server produksi: [Panduan Deployment & Infrastruktur](07-deployment-dan-infrastruktur/01-prasyarat-server-dan-dependensi.md)
   - Pemecahan masalah error produksi: [Troubleshooting Lingkungan LAN](07-deployment-dan-infrastruktur/06-troubleshooting-lingkungan-lan.md)
+  - Audit & pengamanan unggah berkas: [Audit Keamanan File Upload](07-deployment-dan-infrastruktur/07-audit-keamanan-file-upload.md)
+  - Checklist uji sebelum/sesudah deploy: [Checklist Uji Pra-Deploy](07-deployment-dan-infrastruktur/08-checklist-uji-pra-deploy.md)
 
 - 👨‍💻 **Saya Pengembang (Software Engineer / Backend Developer)**:
   - Arsitektur MVC & alur request: [Overview & Arsitektur MVC](01-arsitektur-sistem/01-overview-dan-arsitektur-mvc.md)
