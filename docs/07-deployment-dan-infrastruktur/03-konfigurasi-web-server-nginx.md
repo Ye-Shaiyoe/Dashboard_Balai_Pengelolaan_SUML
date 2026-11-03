@@ -41,6 +41,16 @@ server {
         try_files $uri $uri/ /index.php?$query_string;
     }
 
+    # Folder unggahan publik (foto profil). Jangan pernah mengeksekusi skrip
+    # di sini dan jangan tampilkan daftar direktori.
+    location ^~ /storage/ {
+        autoindex off;
+
+        location ~* \.(php|phtml|phar|pl|py|sh|cgi|asp|aspx|jsp)$ {
+            deny all;
+        }
+    }
+
     # Menonaktifkan logging untuk favicon dan robots.txt
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
