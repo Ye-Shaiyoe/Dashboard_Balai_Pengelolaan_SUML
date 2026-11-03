@@ -22,21 +22,25 @@ composer install --no-dev --optimize-autoloader
 # 3. Jalankan migrasi database otomatis (jika ada skema/tabel baru)
 php artisan migrate --force
 
-# 4. Bangun ulang aset frontend (Tailwind & JavaScript)
+# 4. Pindahkan tanda tangan TTE lama dari disk public ke private (idempoten,
+#    aman dijalankan berulang). Wajib untuk rilis yang memuat perbaikan TTE.
+php artisan signatures:privatize
+
+# 5. Bangun ulang aset frontend (Tailwind & JavaScript)
 npm install
 npm run build
 
-# 5. Bersihkan dan segarkan seluruh cache optimasi Laravel
+# 6. Bersihkan dan segarkan seluruh cache optimasi Laravel
 php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# 6. Pastikan kembali kepemilikan dan izin folder tidak berubah
+# 7. Pastikan kembali kepemilikan dan izin folder tidak berubah
 sudo chown -R www-data:www-data storage bootstrap/cache
 sudo chmod -R 775 storage bootstrap/cache
 
-# 7. Mulai ulang PHP-FPM untuk membersihkan memori OPcache
+# 8. Mulai ulang PHP-FPM untuk membersihkan memori OPcache
 sudo systemctl restart php8.2-fpm
 ```
 
@@ -54,6 +58,7 @@ php artisan down --secret="bpsuml-bypass-2026"
 git pull origin main
 composer install --no-dev --optimize-autoloader
 php artisan migrate --force
+php artisan signatures:privatize
 npm run build
 php artisan optimize:clear
 php artisan config:cache
