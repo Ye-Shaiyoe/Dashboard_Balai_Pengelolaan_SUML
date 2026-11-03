@@ -43,7 +43,7 @@ flowchart LR
 ## 2. Keamanan Tanda Tangan Elektronik (TTE / Digital Signature)
 
 Pembubuhan Tanda Tangan Elektronik pada Tahap 6 memerlukan kontrol keamanan ganda (*two-factor authority*):
-1. **Penyimpanan Terisolasi**: Berkas scan tanda tangan disimpan di `storage/app/private/tte/` yang tidak dapat diakses melalui URL web langsung.
+1. **Penyimpanan Terisolasi**: Berkas scan tanda tangan disimpan di `storage/app/private/signatures/` (disk `private`) yang tidak dapat diakses melalui URL web langsung. Gambar hanya disajikan lewat rute terautentikasi `GET /profile/signature/{user?}`.
 2. **Validasi PIN Terenkripsi (`signature_pin`)**:
    - Kepala Balai wajib mendaftarkan PIN 6 digit pada halaman profil.
    - PIN disimpan dalam bentuk hash terenkripsi (Bcrypt / Hash::make).
@@ -74,6 +74,10 @@ Untuk mencegah serangan *brute force*, spamming, dan kelebihan beban di jaringan
 | `POST /surat/ajukan` | `5 submission / 1 menit` | Menghindari duplikasi unggah naskah yang sama |
 | `PATCH /surat/{surat}` | `5 pembaruan / 1 menit` | Membatasi spam update draf |
 | `POST /surat/{surat}/reupload` | `5 pengunggahan / 1 menit`| Membatasi beban upload file ke disk server |
+| `PATCH /profile` (foto profil) | `throttle:upload` (20 / 1 menit) | Membatasi unggah foto profil & perubahan data |
+| `PATCH /profile/tte` | `throttle:upload` (20 / 1 menit) | Membatasi unggah tanda tangan TTE |
+| `POST /Template` | `throttle:upload` (20 / 1 menit) | Membatasi unggah template surat oleh admin |
+| `POST /Surat/{surat}/upload-file-admin` | `throttle:upload` (20 / 1 menit) | Membatasi unggah ulang berkas oleh Arsiparis |
 | `POST /aspirasi` | `10 request / 1 menit` | Mencegah bot spam formulir saran/keluhan |
 | `GET /become-it-support` | `3 request / 1 menit` | Memproteksi rute aktivasi peran teknis |
 | `POST /auth/switch-account` | `10 request / 1 menit` | Mencegah token scanning untuk ganti akun |
