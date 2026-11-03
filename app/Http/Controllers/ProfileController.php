@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use Carbon\Carbon;
 
 class ProfileController extends Controller
@@ -60,43 +65,23 @@ class ProfileController extends Controller
             $user->nip_hash = $nipValue ? \App\Models\User::hashNip($nipValue) : null;
         }
 
-        // Handle base64 encoded profile photo from cropper
+        // Handle profile photo (base64 dari cropper maupun upload langsung).
+        // Gambar selalu di-decode ulang menjadi PNG oleh ImageUploadService,
+        // sehingga ekstensi & isi file tidak lagi ditentukan oleh client.
+        $imageUploader = app(ImageUploadService::class);
+
         if ($request->filled('cropped_photo')) {
-            $base64Image = $request->input('cropped_photo');
-            $imageParts = explode(';base64,', $base64Image);
-            
-            if (count($imageParts) === 2) {
-                $imageTypeAux = explode('image/', $imageParts[0]);
-                $imageType = isset($imageTypeAux[1]) ? explode(';', $imageTypeAux[1])[0] : 'png';
-                $imageBase64 = base64_decode($imageParts[1]);
-                
-                // Validate magic bytes untuk mencegah RCE (validasi konten file, bukan extension)
-                if (!$this->isValidImageMagicBytes($imageBase64)) {
-                    return Redirect::route('profile.edit')->withErrors(['profile_photo' => 'File bukan merupakan gambar yang valid.']);
-                }
-                
-                $fileName = 'profile_photos/' . uniqid() . '.' . $imageType;
+            $this->storeProfilePhoto(
+                $user,
+                $imageUploader->fromDataUri($request->input('cropped_photo'), 'profile_photo')
+            );
+        } elseif ($request->hasFile('profile_photo') || $request->hasFile('profile_photo_raw')) {
+            $file = $request->file('profile_photo') ?? $request->file('profile_photo_raw');
 
-                if ($user->profile_photo && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->profile_photo)) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_photo);
-                }
-
-                \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $imageBase64);
-                $user->profile_photo = $fileName;
-            }
-        } elseif ($request->hasFile('profile_photo')) {
-            if ($user->profile_photo && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->profile_photo)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_photo);
-            }
-            
-            // Validasi magic bytes sebelum menyimpan file
-            $filePath = $request->file('profile_photo')->path();
-            if (!$this->isValidImageMagicBytes(file_get_contents($filePath))) {
-                return Redirect::route('profile.edit')->withErrors(['profile_photo' => 'File bukan merupakan gambar yang valid.']);
-            }
-            
-            $path = $request->file('profile_photo')->store('profile_photos', 'public');
-            $user->profile_photo = $path;
+            $this->storeProfilePhoto(
+                $user,
+                $imageUploader->fromUploadedFile($file, 'profile_photo')
+            );
         }
 
         if ($user->isDirty('email')) {
@@ -130,56 +115,93 @@ class ProfileController extends Controller
     }
 
     /**
-     * Validasi magic bytes untuk image files.
-     * Mencegah upload file berbahaya yang di-disguise sebagai image.
-     * Fix untuk RCE prevention - validasi konten file, bukan hanya extension.
+     * Simpan foto profil (PNG yang sudah dinormalisasi) ke disk public.
+     * Nama file selalu dibuat server, ekstensi selalu `.png`.
      */
-    private function isValidImageMagicBytes(string $fileContent): bool
+    private function storeProfilePhoto(User $user, string $png): void
     {
-        if (empty($fileContent)) {
-            return false;
+        $fileName = 'profile_photos/' . Str::uuid() . '.png';
+
+        Storage::disk('public')->put($fileName, $png);
+
+        // Hapus foto lama setelah foto baru berhasil disimpan.
+        if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
+            Storage::disk('public')->delete($user->profile_photo);
         }
 
-        // Magic bytes untuk image formats yang diizinkan
-        $validSignatures = [
-            'JPEG' => [0xFF, 0xD8, 0xFF],
-            'PNG'  => [0x89, 0x50, 0x4E, 0x47],
-            'GIF87' => [0x47, 0x49, 0x46, 0x38, 0x37],
-            'GIF89' => [0x47, 0x49, 0x46, 0x38, 0x39],
-            'WEBP' => [0x52, 0x49, 0x46, 0x46], // RIFF (WebP uses RIFF container)
+        $user->profile_photo = $fileName;
+    }
+
+    /**
+     * Simpan tanda tangan TTE (PNG transparan) ke disk private.
+     *
+     * TTE adalah data biometrik yang sensitif, jadi tidak boleh berada di
+     * disk `public`. File lama (dari sebelum perbaikan) tetap dihapus dari
+     * kedua disk agar tidak ada salinan yang tertinggal.
+     */
+    private function storeSignature(User $user, string $png): void
+    {
+        $fileName = 'signatures/' . Str::uuid() . '.png';
+
+        Storage::disk('private')->put($fileName, $png);
+
+        if ($user->signature_path) {
+            foreach (['private', 'public'] as $disk) {
+                if (Storage::disk($disk)->exists($user->signature_path)) {
+                    Storage::disk($disk)->delete($user->signature_path);
+                }
+            }
+        }
+
+        $user->signature_path = $fileName;
+    }
+
+    /**
+     * Tampilkan tanda tangan TTE milik sendiri, atau milik user lain bagi admin.
+     */
+    public function signature(Request $request, ?User $user = null)
+    {
+        $user ??= $request->user();
+        $viewer = $request->user();
+
+        if ($viewer->id !== $user->id && !$viewer->isAdmin()) {
+            abort(403, 'Anda tidak berhak melihat tanda tangan ini.');
+        }
+
+        if (!$user->signature_path) {
+            abort(404, 'Tanda tangan tidak ditemukan.');
+        }
+
+        $disk = Storage::disk('private');
+
+        if (!$disk->exists($user->signature_path)) {
+            // Kompatibilitas: file lama masih tersimpan di disk public.
+            $disk = Storage::disk('public');
+        }
+
+        if (!$disk->exists($user->signature_path)) {
+            abort(404, 'Tanda tangan tidak ditemukan.');
+        }
+
+        $extension = strtolower(pathinfo($user->signature_path, PATHINFO_EXTENSION));
+
+        $mimeTypes = [
+            'png'  => 'image/png',
+            'jpg'  => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif'  => 'image/gif',
+            'webp' => 'image/webp',
         ];
 
-        $fileBytes = array_values(unpack('C*', substr($fileContent, 0, 12)));
-
-        foreach ($validSignatures as $format => $signature) {
-            if (count($fileBytes) < count($signature)) {
-                continue;
-            }
-
-            $match = true;
-            for ($i = 0; $i < count($signature); $i++) {
-                if ($fileBytes[$i] !== $signature[$i]) {
-                    $match = false;
-                    break;
-                }
-            }
-
-            if ($match) {
-                // Extra check untuk WebP
-                if ($format === 'WEBP' && strpos($fileContent, 'WEBP') === false) {
-                    continue;
-                }
-                return true;
-            }
+        if (!isset($mimeTypes[$extension])) {
+            abort(404, 'Tanda tangan tidak ditemukan.');
         }
 
-        // Fallback: gunakan getimagesize untuk extra validation
-        $tmpFile = tempnam(sys_get_temp_dir(), 'img');
-        file_put_contents($tmpFile, $fileContent);
-        $imageInfo = @getimagesize($tmpFile);
-        @unlink($tmpFile);
-
-        return $imageInfo !== false && in_array($imageInfo[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF, IMAGETYPE_WEBP]);
+        return response($disk->get($user->signature_path), 200, [
+            'Content-Type'        => $mimeTypes[$extension],
+            'Content-Disposition' => 'inline; filename="signature.' . $extension . '"',
+            'Cache-Control'       => 'private, no-store, max-age=0',
+        ]);
     }
 
     /**
@@ -301,44 +323,28 @@ class ProfileController extends Controller
         $request->validate([
             'signature_pin' => ['nullable', 'string', 'min:6', 'max:20', 'confirmed'],
             'signature_file' => ['nullable', 'image', 'mimes:png', 'max:2048'], // png disarankan karena transparansi
-            'cropped_signature' => ['nullable', 'string'],
+            'cropped_signature' => ['nullable', 'string', 'max:3000000'],
         ]);
 
-        // 3. Proses Upload/Crop Tanda Tangan
-        if ($request->filled('cropped_signature')) {
-            $base64Image = $request->input('cropped_signature');
-            $imageParts = explode(';base64,', $base64Image);
-            
-            if (count($imageParts) === 2) {
-                $imageTypeAux = explode('image/', $imageParts[0]);
-                $imageType = isset($imageTypeAux[1]) ? explode(';', $imageTypeAux[1])[0] : 'png';
-                $imageBase64 = base64_decode($imageParts[1]);
-                
-                if (!$this->isValidImageMagicBytes($imageBase64)) {
-                    return Redirect::to(route('profile.edit') . '#tte-section')->withErrors(['signature_file' => 'File tanda tangan bukan gambar PNG/transparan yang valid.']);
-                }
-                
-                $fileName = 'signatures/' . uniqid() . '.' . $imageType;
+        // 3. Proses Upload/Crop Tanda Tangan.
+        // Gambar di-decode ulang menjadi PNG dan disimpan di disk `private`,
+        // bukan `public`, karena tanda tangan adalah data biometrik sensitif.
+        $imageUploader = app(ImageUploadService::class);
 
-                if ($user->signature_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->signature_path)) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->signature_path);
-                }
-
-                \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $imageBase64);
-                $user->signature_path = $fileName;
+        try {
+            if ($request->filled('cropped_signature')) {
+                $this->storeSignature(
+                    $user,
+                    $imageUploader->fromDataUri($request->input('cropped_signature'), 'signature_file')
+                );
+            } elseif ($request->hasFile('signature_file')) {
+                $this->storeSignature(
+                    $user,
+                    $imageUploader->fromUploadedFile($request->file('signature_file'), 'signature_file')
+                );
             }
-        } elseif ($request->hasFile('signature_file')) {
-            if ($user->signature_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->signature_path)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->signature_path);
-            }
-            
-            $filePath = $request->file('signature_file')->path();
-            if (!$this->isValidImageMagicBytes(file_get_contents($filePath))) {
-                return Redirect::to(route('profile.edit') . '#tte-section')->withErrors(['signature_file' => 'File tanda tangan bukan gambar yang valid.']);
-            }
-            
-            $path = $request->file('signature_file')->store('signatures', 'public');
-            $user->signature_path = $path;
+        } catch (ValidationException $e) {
+            return Redirect::to(route('profile.edit') . '#tte-section')->withErrors($e->errors());
         }
 
         // 4. Proses PIN Baru
