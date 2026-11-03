@@ -27,13 +27,28 @@ class DocxToHtmlConverter
             return;
         }
 
+        // Batas ukuran gambar untuk mencegah zip bomb / kehabisan memori.
+        $maxImageBytes = 5 * 1024 * 1024;   // 5 MB per gambar
+        $maxTotalBytes = 20 * 1024 * 1024;  // 20 MB total
+        $totalBytes = 0;
+
         // Cari semua file gambar di word/media/
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $filename = $zip->getNameIndex($i);
             if (preg_match('#^word/media/(.+)$#', $filename, $matches)) {
                 $imageName = $matches[1];
+
+                // Cek ukuran hasil dekompresi sebelum membaca isi file.
+                $stat = $zip->statIndex($i);
+                $size = (int) ($stat['size'] ?? 0);
+
+                if ($size <= 0 || $size > $maxImageBytes || ($totalBytes + $size) > $maxTotalBytes) {
+                    continue;
+                }
+
                 $imageData = $zip->getFromIndex($i);
                 if ($imageData !== false) {
+                    $totalBytes += $size;
                     $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
                     $mimeType = match ($extension) {
                         'png' => 'image/png',
@@ -58,7 +73,7 @@ class DocxToHtmlConverter
     {
         // Parse rels XML untuk cari Target
         $dom = new \DOMDocument();
-        $dom->loadXML($relsXml);
+        $dom->loadXML($relsXml, LIBXML_NONET);
         
         foreach ($dom->getElementsByTagName('Relationship') as $rel) {
             if ($rel->getAttribute('Id') === $imageId) {
@@ -108,6 +123,15 @@ class DocxToHtmlConverter
             ];
             $errorMsg = $errorMessages[$result] ?? 'Error code: ' . $result;
             return '<p style="color:red;">Gagal membuka file .docx: ' . $errorMsg . '</p><p style="color:gray; font-size:12px;">File size: ' . number_format($fileSize) . ' bytes</p>';
+        }
+
+        // Batasi ukuran XML yang akan didekompresi (proteksi zip bomb).
+        $maxXmlBytes = 15 * 1024 * 1024;
+        $docStat = $zip->statName('word/document.xml');
+
+        if ($docStat !== false && (int) ($docStat['size'] ?? 0) > $maxXmlBytes) {
+            $zip->close();
+            return '<p style="color:red;">Dokumen terlalu besar untuk ditampilkan.</p><p style="color:gray; font-size:12px;">Ukuran XML dokumen melebihi batas 15 MB.</p>';
         }
 
         // Baca document.xml dan document.xml.rels
