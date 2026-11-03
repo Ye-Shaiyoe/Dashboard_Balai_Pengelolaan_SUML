@@ -18,7 +18,7 @@
                 <x-input-label value="Tanda Tangan Aktif" class="text-[11px] font-black uppercase tracking-widest text-slate-400" />
                 <div class="p-6 rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 flex flex-col items-center justify-center min-h-[200px] relative overflow-hidden group">
                     @if($user->signature_path)
-                        <img id="signature-preview" src="{{ Storage::url($user->signature_path) }}" class="max-h-[140px] object-contain relative z-10 filter drop-shadow-md" alt="Tanda Tangan">
+                        <img id="signature-preview" src="{{ route('profile.signature') }}" class="max-h-[140px] object-contain relative z-10 filter drop-shadow-md" alt="Tanda Tangan">
                     @else
                         <div id="no-signature-placeholder" class="text-center py-6 text-slate-400">
                             <i class="bi bi-pencil-square text-4xl block mb-2 opacity-50"></i>
@@ -58,6 +58,7 @@
                         <span class="text-[10px] text-slate-400">PNG Transparan disarankan (Maks. 2MB)</span>
                         <input type="file" id="signature_file" name="signature_file" accept="image/png" class="hidden">
                     </div>
+                    <x-input-error :messages="$errors->get('signature_file')" class="text-xs font-bold" />
                 </div>
             </div>
         </div>
