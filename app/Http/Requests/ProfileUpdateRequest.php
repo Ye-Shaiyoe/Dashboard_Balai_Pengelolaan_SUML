@@ -44,8 +44,9 @@ class ProfileUpdateRequest extends FormRequest
                 'regex:/^\d{18}$/',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
-            'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'cropped_photo' => ['nullable', 'string'],
+            'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+            'profile_photo_raw' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+            'cropped_photo' => ['nullable', 'string', 'max:3000000'],
         ];
     }
 
