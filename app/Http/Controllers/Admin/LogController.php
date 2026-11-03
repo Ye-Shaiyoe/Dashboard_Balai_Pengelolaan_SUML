@@ -15,23 +15,23 @@ class LogController extends Controller
         if (!File::isDirectory($logPath)) {
             File::makeDirectory($logPath, 0755, true);
         }
-        
+
         $files = File::glob($logPath . '/*.log');
         $files = $files ?: [];
         $files = array_reverse($files);
 
-        $selectedFile = $request->get('file');
+        // Hanya izinkan file *.log yang benar-benar berada di storage/logs.
+        // Tanpa ini, ?file=../../.env bisa dipakai untuk membaca file lain.
+        $selectedPath = $this->resolveLogPath($request->get('file'));
         $currentFile = null;
         $logs = [];
 
-        if ($selectedFile && File::exists($logPath . '/' . $selectedFile)) {
-            $currentFile = $selectedFile;
-            $rawContent = $this->readLastLines($logPath . '/' . $selectedFile, 500);
-            $logs = $this->parseLogs($rawContent);
+        if ($selectedPath !== null) {
+            $currentFile = basename($selectedPath);
+            $logs = $this->parseLogs($this->readLastLines($selectedPath, 500));
         } elseif (count($files) > 0) {
             $currentFile = basename($files[0]);
-            $rawContent = $this->readLastLines($files[0], 500);
-            $logs = $this->parseLogs($rawContent);
+            $logs = $this->parseLogs($this->readLastLines($files[0], 500));
         }
 
         $fileList = array_map(function($file) {
@@ -80,8 +80,8 @@ class LogController extends Controller
 
     public function download($file)
     {
-        $path = storage_path('logs/' . $file);
-        if (File::exists($path)) {
+        $path = $this->resolveLogPath($file);
+        if ($path !== null) {
             return Response::download($path);
         }
         return redirect()->back()->with('error', 'File not found.');
@@ -89,8 +89,8 @@ class LogController extends Controller
 
     public function clear($file)
     {
-        $path = storage_path('logs/' . $file);
-        if (File::exists($path)) {
+        $path = $this->resolveLogPath($file);
+        if ($path !== null) {
             File::put($path, '');
             return redirect()->back()->with('success', 'Log file cleared.');
         }
@@ -99,12 +99,48 @@ class LogController extends Controller
 
     public function delete($file)
     {
-        $path = storage_path('logs/' . $file);
-        if (File::exists($path) && $file !== 'laravel.log') {
+        $path = $this->resolveLogPath($file);
+
+        if ($path !== null && basename($path) !== 'laravel.log') {
             File::delete($path);
             return redirect()->route('admin.logs.index')->with('success', 'Log file deleted.');
         }
         return redirect()->back()->with('error', 'Cannot delete main log file.');
+    }
+
+    /**
+     * Ubah nama file menjadi path absolut yang aman.
+     *
+     * Mengembalikan null jika nama file bukan file .log, mengandung path
+     * traversal, atau berada di luar storage/logs.
+     */
+    private function resolveLogPath(mixed $file): ?string
+    {
+        if (!is_string($file) || $file === '') {
+            return null;
+        }
+
+        // Buang direktori (termasuk backslash Windows) lalu validasi nama file.
+        $file = basename(str_replace('\\', '/', $file));
+
+        if (!preg_match('/^[A-Za-z0-9][A-Za-z0-9._-]*\.log$/', $file)) {
+            return null;
+        }
+
+        $baseDir = realpath(storage_path('logs'));
+        $path = realpath(storage_path('logs') . DIRECTORY_SEPARATOR . $file);
+
+        if ($baseDir === false || $path === false) {
+            return null;
+        }
+
+        // File harus berada tepat di dalam folder logs, bukan di subfolder
+        // atau di luar folder tersebut.
+        if (strcasecmp(dirname($path), $baseDir) !== 0) {
+            return null;
+        }
+
+        return $path;
     }
 
     private function readLastLines($filePath, $lines = 500)
