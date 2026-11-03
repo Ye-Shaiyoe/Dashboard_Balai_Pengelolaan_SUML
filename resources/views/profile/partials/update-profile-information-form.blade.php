@@ -72,6 +72,7 @@
                 </button>
                 <p class="text-[10px] text-slate-400">Klik avatar atau tombol di atas untuk mengunggah</p>
                 <x-input-error :messages="$errors->get('profile_photo')" class="mt-1" />
+                <x-input-error :messages="$errors->get('profile_photo_raw')" class="mt-1" />
             </div>
         </div>
 
