@@ -490,8 +490,20 @@ class SuratController extends Controller
         }
 
         $request->validate([
-            'file_word' => 'required|file|mimes:docx,doc,pdf|max:5120',
-            'file_lampiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png,docx,doc,xlsx,xls|max:10240',
+            'file_word' => [
+                'required',
+                'file',
+                'mimes:docx,doc,pdf',
+                'mimetypes:application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,application/pdf',
+                'max:5120',
+            ],
+            'file_lampiran' => [
+                'nullable',
+                'file',
+                'mimes:pdf,jpg,jpeg,png,docx,doc,xlsx,xls',
+                'mimetypes:application/pdf,image/jpeg,image/png,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel',
+                'max:10240',
+            ],
         ]);
 
         if ($surat->file_word) {
