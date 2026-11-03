@@ -14,6 +14,9 @@ class TemplateSuratController extends Controller
     // Folder tempat simpan template
     const FOLDER = 'templates';
 
+    // Ekstensi yang boleh disimpan sebagai template
+    const ALLOWED_EXTENSIONS = ['docx', 'doc', 'pdf'];
+
     public function index()
     {
         /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
@@ -46,9 +49,28 @@ class TemplateSuratController extends Controller
             'nama_file'     => 'required|string|max:100',
         ]);
 
-        $ext = strtolower($request->file('file_template')->getClientOriginalExtension());
-        $namaFile = \Str::slug($request->nama_file) . '.' . $ext;
-        $request->file('file_template')->storeAs(self::FOLDER, $namaFile, 'private');
+        $file = $request->file('file_template');
+
+        // Ekstensi diambil dari hasil deteksi server (bukan nama dari client),
+        // supaya file seperti "template.php" tidak bisa lolos.
+        $ext = strtolower((string) $file->extension());
+
+        if (!in_array($ext, self::ALLOWED_EXTENSIONS, true)) {
+            return back()->withErrors([
+                'file_template' => 'Format template tidak didukung. Gunakan DOCX, DOC, atau PDF.',
+            ]);
+        }
+
+        $slug = \Str::slug($request->nama_file) ?: 'template';
+        $namaFile = $slug . '.' . $ext;
+        $disk = Storage::disk('private');
+
+        // Jangan menimpa template lain yang kebetulan memiliki nama sama.
+        if ($disk->exists(self::FOLDER . '/' . $namaFile)) {
+            $namaFile = $slug . '-' . \Str::lower(\Str::random(6)) . '.' . $ext;
+        }
+
+        $file->storeAs(self::FOLDER, $namaFile, 'private');
 
         return redirect()->route('admin.template.index')
                          ->with('success', "Template '{$namaFile}' berhasil diupload.");
@@ -56,8 +78,17 @@ class TemplateSuratController extends Controller
 
     public function destroy(Request $request)
     {
-        $request->validate(['path' => 'required|string']);
-        Storage::disk('private')->delete($request->path);
+        $request->validate(['path' => 'required|string|max:255']);
+
+        // Hanya boleh menghapus file yang berada langsung di folder templates.
+        $nama = basename(str_replace('\\', '/', $request->path));
+        $path = self::FOLDER . '/' . $nama;
+
+        if (!Storage::disk('private')->exists($path)) {
+            return back()->with('error', 'Template tidak ditemukan.');
+        }
+
+        Storage::disk('private')->delete($path);
 
         return redirect()->route('admin.template.index')
                          ->with('success', 'Template berhasil dihapus.');
@@ -72,6 +103,11 @@ class TemplateSuratController extends Controller
         }
 
         $extension = strtolower(pathinfo($safeName, PATHINFO_EXTENSION));
+
+        if (!in_array($extension, self::ALLOWED_EXTENSIONS, true)) {
+            abort(404, 'File template tidak ditemukan.');
+        }
+
         $mimeTypes = [
             'pdf'  => 'application/pdf',
             'doc'  => 'application/msword',
