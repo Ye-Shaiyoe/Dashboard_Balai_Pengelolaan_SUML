@@ -43,7 +43,7 @@ sudo chmod -R 775 /var/www/dashboard-tubpsuml/bootstrap/cache
 Untuk direktori dokumen kedinasan terisolasi:
 - `storage/app/private/surat/`
 - `storage/app/private/lampiran/`
-- `storage/app/private/tte/`
+- `storage/app/private/signatures/`
 
 Pastikan direktori-direktori tersebut berpemilik `www-data:www-data` dengan mode `770` atau `775`. Hal ini menjamin proses PHP-FPM dapat menyimpan naskah Word dan membubuhkan tanda tangan elektronik, sementara pengguna biasa di server tidak dapat membuka berkas secara sembarangan.
 
