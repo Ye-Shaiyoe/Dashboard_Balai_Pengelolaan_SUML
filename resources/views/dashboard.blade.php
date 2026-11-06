@@ -1059,7 +1059,7 @@
 @if($isLibur)
 <div class="alert alert-warning border-0 shadow-sm mb-4" style="border-radius:16px; background:#fffbeb; color:#b45309; border-left: 5px solid #f59e0b !important;">
     <div class="d-flex align-items-center gap-3 p-2">
-        <div style="font-size:32px;">⏰</div>
+        <div style="font-size:32px; color:#f59e0b;"><i class="bi bi-clock-history"></i></div>
         <div>
             <h6 class="fw-bold mb-1">Layanan Sedang Tutup</h6>
             <p class="mb-0" style="font-size:13px; opacity:0.9;">
@@ -1247,17 +1247,17 @@
                             </div>
                             <div class="flex-shrink-0">
                                 @if($surat->status === 'selesai')
-                                    <span class="badge rounded-pill" style="background:#dcfce7; color:#15803d; font-size:11px; padding:6px 12px;">✓ Selesai</span>
+                                    <span class="badge rounded-pill" style="background:#dcfce7; color:#15803d; font-size:11px; padding:6px 12px;"><i class="bi bi-check-lg me-1"></i>Selesai</span>
                                 @elseif($surat->status === 'ditolak')
-                                    <span class="badge rounded-pill" style="background:#fee2e2; color:#b91c1c; font-size:11px; padding:6px 12px;">✗ Ditolak</span>
+                                    <span class="badge rounded-pill" style="background:#fee2e2; color:#b91c1c; font-size:11px; padding:6px 12px;"><i class="bi bi-x-lg me-1"></i>Ditolak</span>
                                 @elseif($surat->status === 'revisi')
-                                    <span class="badge rounded-pill" style="background:#fef3c7; color:#b45309; font-size:11px; padding:6px 12px;">📝 Revisi</span>
+                                    <span class="badge rounded-pill" style="background:#fef3c7; color:#b45309; font-size:11px; padding:6px 12px;"><i class="bi bi-pencil-square me-1"></i>Revisi</span>
                                 @elseif($surat->status === 'revisi_admin')
-                                    <span class="badge rounded-pill" style="background:#f3e8ff; color:#6b21a8; font-size:11px; padding:6px 12px;">⚙️ Admin Revisi</span>
+                                    <span class="badge rounded-pill" style="background:#f3e8ff; color:#6b21a8; font-size:11px; padding:6px 12px;"><i class="bi bi-gear-fill me-1"></i>Admin Revisi</span>
                                 @elseif($surat->sla_status === 'terlambat')
-                                    <span class="badge rounded-pill" style="background:#fee2e2; color:#b91c1c; font-size:11px; padding:6px 12px;">⚠ SLA!</span>
+                                    <span class="badge rounded-pill" style="background:#fee2e2; color:#b91c1c; font-size:11px; padding:6px 12px;"><i class="bi bi-exclamation-triangle-fill me-1"></i>SLA!</span>
                                 @else
-                                    <span class="badge rounded-pill" style="background:#dbeafe; color:#1d4ed8; font-size:11px; padding:6px 12px;">⏱ Proses</span>
+                                    <span class="badge rounded-pill" style="background:#dbeafe; color:#1d4ed8; font-size:11px; padding:6px 12px;"><i class="bi bi-clock-history me-1"></i>Proses</span>
                                 @endif
                             </div>
                         </div>
@@ -1425,7 +1425,7 @@
                                 {{ Str::limit($surat->judul, 28) }}
                             </span>
                             <span class="badge sla-countdown-badge" style="font-size:11px; padding:4.5px 10px; border-radius:8px; font-weight: 700; transition: all 0.3s ease;">
-                                ⏱ Hitung mundur...
+                                <i class="bi bi-stopwatch me-1"></i> Hitung mundur...
                             </span>
                         </div>
                         <div class="progress" style="height:8px; background:#e2e8f0; border-radius:99px; overflow:hidden;">
@@ -2047,7 +2047,7 @@
                             </div>
                             
                             <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2" style="font-size: 12px; font-weight: 600;">
-                                🎉 Surat Telah Selesai
+                                <i class="bi bi-check-circle-fill me-1"></i> Surat Telah Selesai
                             </span>
                             
                             <h4 style="font-weight: 800; color: #1e293b; margin-bottom: 8px; font-size: 20px;">
@@ -2104,11 +2104,11 @@
                         const stars = popup.querySelectorAll('.star-item');
                         const ratingText = popup.querySelector('#star-rating-text');
                         const labels = {
-                            1: '⭐ Sangat Tidak Memuaskan',
-                            2: '⭐⭐ Kurang Memuaskan',
-                            3: '⭐⭐⭐ Cukup Memuaskan',
-                            4: '⭐⭐⭐⭐ Memuaskan',
-                            5: '⭐⭐⭐⭐⭐ Sangat Memuaskan!'
+                            1: 'Sangat Tidak Memuaskan',
+                            2: 'Kurang Memuaskan',
+                            3: 'Cukup Memuaskan',
+                            4: 'Memuaskan',
+                            5: 'Sangat Memuaskan!'
                         };
 
                         const updateStars = (val) => {
@@ -2255,7 +2255,7 @@
             if (!deadlineStr) {
                 const badge = item.querySelector('.sla-countdown-badge');
                 if (badge) {
-                    badge.innerHTML = '🟢 SLA Ok';
+                    badge.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> SLA Ok';
                     badge.style.background = '#dcfce7';
                     badge.style.color = '#15803d';
                 }
@@ -2273,7 +2273,7 @@
             if (diffMs <= 0) {
                 // Expired SLA (Terlambat)
                 if (badge) {
-                    badge.innerHTML = '🔴 ⚠ Terlambat';
+                    badge.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Terlambat';
                     badge.style.background = '#fee2e2';
                     badge.style.color = '#b91c1c';
                     badge.className = 'badge sla-countdown-badge'; // reset glow classes
@@ -2313,7 +2313,7 @@
                 if (hours < 3) {
                     // Critical (under 3h) - Pulse Red Glow
                     if (badge) {
-                        badge.innerHTML = `⚡ ${timeString}`;
+                        badge.innerHTML = `<i class="bi bi-lightning-charge-fill me-1"></i> ${timeString}`;
                         badge.style.background = '#fee2e2';
                         badge.style.color = '#b91c1c';
                         badge.className = 'badge sla-countdown-badge glow-pulse-red';
@@ -2324,7 +2324,7 @@
                 } else if (hours < 12) {
                     // Warning (under 12h) - Pulse Amber Glow
                     if (badge) {
-                        badge.innerHTML = `⚡ ${timeString}`;
+                        badge.innerHTML = `<i class="bi bi-lightning-charge-fill me-1"></i> ${timeString}`;
                         badge.style.background = '#fef3c7';
                         badge.style.color = '#92400e';
                         badge.className = 'badge sla-countdown-badge glow-pulse-amber';
@@ -2335,7 +2335,7 @@
                 } else {
                     // Healthy (above 12h)
                     if (badge) {
-                        badge.innerHTML = `✔ ${timeString}`;
+                        badge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${timeString}`;
                         badge.style.background = '#dcfce7';
                         badge.style.color = '#15803d';
                         badge.className = 'badge sla-countdown-badge';

@@ -114,7 +114,7 @@
         <i class="bi bi-arrow-left"></i>
     </a>
     <div>
-        <h5 class="fw-bold mb-0" style="color:#1e3a5f;">📄 Template Surat</h5>
+        <h5 class="fw-bold mb-0" style="color:#1e3a5f;"><i class="bi bi-file-earmark-arrow-down me-2"></i>Template Surat</h5>
         <small class="text-muted">Unduh template untuk mengajukan surat</small>
     </div>
 </div>

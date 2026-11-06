@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pilih Role Admin — Surat Metrologi</title>
     <link rel="icon" href="{{ asset('images/metrologi.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -147,7 +148,7 @@
         </div>
 
         <div class="alert alert-info">
-            ℹ️ Role yang sudah dipilih <strong>tidak dapat diubah sendiri</strong>. Hubungi administrator jika perlu mengubah role.
+            <i class="bi bi-info-circle-fill" style="margin-right: 6px;"></i>Role yang sudah dipilih <strong>tidak dapat diubah sendiri</strong>. Hubungi administrator jika perlu mengubah role.
         </div>
 
         <form action="{{ route('admin.role.store') }}" method="POST" id="role-form">
@@ -157,7 +158,7 @@
                 {{-- Admin Aspirasi --}}
                 <label class="role-card" id="card-admin_aspirasi">
                     <input type="radio" name="role" value="admin_aspirasi" required>
-                    <div class="role-icon">📁</div>
+                    <div class="role-icon"><i class="bi bi-folder2-open" style="color: #1e3a5f;"></i></div>
                     <div class="role-name">Arsiparis</div>
                     <div class="role-desc">
                         Bertanggung jawab verifikasi awal dan pengarsipan surat
@@ -170,7 +171,7 @@
                 {{-- Admin Kasubbag TU --}}
                 <label class="role-card" id="card-admin_kasubbag_tu">
                     <input type="radio" name="role" value="admin_kasubbag_tu" required>
-                    <div class="role-icon">📋</div>
+                    <div class="role-icon"><i class="bi bi-clipboard-check" style="color: #1e3a5f;"></i></div>
                     <div class="role-name">Kasubbag TU</div>
                     <div class="role-desc">
                         Verifikasi surat sebagai Kasubbag Tata Usaha
@@ -183,7 +184,7 @@
                 {{-- Admin Kepala Balai --}}
                 <label class="role-card" id="card-admin_kepala_balai">
                     <input type="radio" name="role" value="admin_kepala_balai" required>
-                    <div class="role-icon">🏛️</div>
+                    <div class="role-icon"><i class="bi bi-building" style="color: #1e3a5f;"></i></div>
                     <div class="role-name">Kepala Balai</div>
                     <div class="role-desc">
                         Persetujuan akhir sebagai Kepala Balai

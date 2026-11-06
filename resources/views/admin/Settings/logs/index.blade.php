@@ -6,7 +6,7 @@
 <div class="card">
     <div class="section-header">
         <div>
-            <h2>📋 Log Sistem</h2>
+            <h2><i class="bi bi-journal-text me-2"></i>Log Sistem</h2>
             <small style="color:var(--text-secondary);">Riwayat aktivitas dan kesalahan sistem (Ramah Pengguna)</small>
         </div>
         <div style="display:flex; gap:10px;">

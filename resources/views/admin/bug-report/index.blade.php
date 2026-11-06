@@ -57,10 +57,10 @@
                     <div class="mb-3">
                         <label class="form-label fw-semibold" style="font-size: 13px;">Kategori</label>
                         <select name="kategori" class="form-select" required style="border-radius: 10px; font-size: 13px;">
-                            <option value="bug">🐛 Bug</option>
-                            <option value="error">⚠️ Error</option>
-                            <option value="fitur">💡 Request Fitur</option>
-                            <option value="lainnya">📝 Lainnya</option>
+                            <option value="bug">Bug</option>
+                            <option value="error">Error</option>
+                            <option value="fitur">Request Fitur</option>
+                            <option value="lainnya">Lainnya</option>
                         </select>
                     </div>
                     <div class="mb-3">

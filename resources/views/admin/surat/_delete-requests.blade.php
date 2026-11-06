@@ -18,11 +18,11 @@
                     <div class="d-flex align-items-center gap-2">
                         <strong style="font-size:13px;color:#111827;">{{ $request->user->name }}</strong>
                         @if($request->status === 'pending')
-                            <span class="badge rounded-pill" style="background:#fef3c7;color:#92400e;font-size:10px;">⏳ Pending</span>
+                            <span class="badge rounded-pill" style="background:#fef3c7;color:#92400e;font-size:10px;"><i class="bi bi-hourglass-split me-1"></i>Pending</span>
                         @elseif($request->status === 'disetujui')
-                            <span class="badge rounded-pill" style="background:#dcfce7;color:#15803d;font-size:10px;">✓ Disetujui</span>
+                            <span class="badge rounded-pill" style="background:#dcfce7;color:#15803d;font-size:10px;"><i class="bi bi-check-lg me-1"></i>Disetujui</span>
                         @else
-                            <span class="badge rounded-pill" style="background:#fee2e2;color:#b91c1c;font-size:10px;">✗ Ditolak</span>
+                            <span class="badge rounded-pill" style="background:#fee2e2;color:#b91c1c;font-size:10px;"><i class="bi bi-x-lg me-1"></i>Ditolak</span>
                         @endif
                     </div>
                     <small class="text-muted">{{ $request->created_at->format('d M Y, H:i') }}</small>

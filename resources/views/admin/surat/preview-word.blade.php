@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preview Dokumen - {{ $surat->judul }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <!-- JSZip and docx-preview -->
@@ -177,7 +178,7 @@
                     console.error('Preview error:', error);
                     loadingOverlay.innerHTML = `
                         <div style="text-align:center; color:#ef4444; padding:32px; background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.15); border-radius: 12px; max-width: 400px;">
-                            <div style="font-size:48px; margin-bottom:12px;">❌</div>
+                            <div style="font-size:48px; margin-bottom:12px;"><i class="bi bi-x-circle-fill"></i></div>
                             <div style="font-weight:700; font-size: 1.1rem; margin-bottom: 6px; color: #fca5a5;">Gagal memuat dokumen</div>
                             <div style="font-size:12px; opacity:0.8; margin-bottom: 20px; line-height: 1.5;">${error.message}</div>
                             <button onclick="location.reload()" class="btn" style="background:#ef4444; border-color:#ef4444; color:white; font-weight:700; width:100%; justify-content:center;">Coba Lagi</button>

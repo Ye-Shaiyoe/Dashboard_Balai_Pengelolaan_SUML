@@ -194,7 +194,7 @@
 <div class="notif-container">
     {{-- Header --}}
     <div class="notif-header">
-        <h5>🔔 Notifikasi</h5>
+        <h5><i class="bi bi-bell-fill me-2"></i>Notifikasi</h5>
         <div class="notif-actions">
             @if($unreadCount > 0)
             <button type="button" class="action-btn read-all" title="Tandai Semua Dibaca" data-action="mark-all-read">
@@ -239,14 +239,19 @@
         @php
             $isUnread = is_null($notif->read_at);
             $type = $notif->data['type'] ?? 'info';
-            $icons = ['success' => '✅', 'danger' => '❌', 'warning' => '⚠️', 'info' => 'ℹ️'];
-            $icon = $icons[$type] ?? 'ℹ️';
+            $iconClasses = [
+                'success' => 'bi bi-check-circle-fill text-success',
+                'danger'  => 'bi bi-x-circle-fill text-danger',
+                'warning' => 'bi bi-exclamation-triangle-fill text-warning',
+                'info'    => 'bi bi-info-circle-fill text-primary',
+            ];
+            $iconClass = $iconClasses[$type] ?? 'bi bi-info-circle-fill text-primary';
         @endphp
 
         <div class="notif-item {{ $isUnread ? 'unread' : '' }} type-{{ $type }}">
             <div class="notif-row">
                 {{-- Icon --}}
-                <div class="notif-icon {{ $type }}">{{ $icon }}</div>
+                <div class="notif-icon {{ $type }}"><i class="{{ $iconClass }}"></i></div>
 
                 {{-- Content --}}
                 <div class="notif-content">

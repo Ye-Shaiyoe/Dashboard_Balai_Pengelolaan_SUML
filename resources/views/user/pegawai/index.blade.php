@@ -264,8 +264,8 @@
                 <h5 class="fw-bold mb-2">Pegawai Tidak Ditemukan</h5>
                 <p class="text-muted mb-0">Tidak ada pegawai dengan nama atau NIP "<strong>{{ request('search') }}</strong>".<br>Coba kata kunci lain.</p>
             @else
-                <div class="empty-state-icon" style="background: linear-gradient(135deg, rgba(67,97,238,0.1) 0%, rgba(14,165,233,0.1) 100%); font-size: 40px;">
-                    🔍
+                <div class="empty-state-icon" style="background: linear-gradient(135deg, rgba(67,97,238,0.1) 0%, rgba(14,165,233,0.1) 100%);">
+                    <i class="bi bi-search text-primary"></i>
                 </div>
                 <h5 class="fw-bold mb-2">Cari Pegawai</h5>
                 <p class="text-muted mb-0">Ketik nama atau NIP rekan kamu di kolom pencarian di atas untuk mulai mencari.</p>

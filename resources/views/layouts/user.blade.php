@@ -2356,7 +2356,7 @@
         function showPublicVerificationModal(e) {
             if (e) e.preventDefault();
             Swal.fire({
-                title: '🔒 Verifikasi Keaslian Surat',
+                title: '<i class="bi bi-shield-lock-fill text-primary me-2"></i>Verifikasi Keaslian Surat',
                 html: `
                     <div class="text-start" style="font-size:13px; color:#475569;">
                         <p class="mb-3">Masukkan Kode UUID verifikasi surat untuk memvalidasi keaslian surat langsung dari sistem resmi.</p>

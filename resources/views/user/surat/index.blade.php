@@ -6,7 +6,7 @@
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2 animate-in">
     <div>
         <h5 class="fw-bold mb-0" style="color:#1e3a5f;">
-            {!! request('status') === 'draft' ? '📝' : '📬' !!} {{ $title }}
+            {!! request('status') === 'draft' ? '<i class="bi bi-file-earmark me-2"></i>' : '<i class="bi bi-inbox-fill me-2"></i>' !!}{{ $title }}
         </h5>
         <small class="text-muted">{{ request('status') === 'draft' ? 'Daftar surat yang masih dalam bentuk draf' : 'Semua surat yang pernah kamu ajukan' }}</small>
     </div>
@@ -151,7 +151,19 @@
                         width:42px;height:42px;border-radius:10px;flex-shrink:0;
                         display:flex;align-items:center;justify-content:center;font-size:18px;
                         background:{{ $surat->status==='selesai' ? '#dcfce7' : ($surat->status==='ditolak' ? '#fee2e2' : ($surat->status==='draft' ? '#f1f5f9' : ($surat->status==='revisi' ? '#fef3c7' : ($surat->status==='revisi_admin' ? '#f3e8ff' : '#dbeafe')))) }}">
-                        {{ $surat->status==='selesai' ? '✅' : ($surat->status==='ditolak' ? '❌' : ($surat->status==='draft' ? '📝' : ($surat->status==='revisi' ? '✍️' : ($surat->status==='revisi_admin' ? '⚙️' : '⏳')))) }}
+                        @if($surat->status === 'selesai')
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        @elseif($surat->status === 'ditolak')
+                            <i class="bi bi-x-circle-fill text-danger"></i>
+                        @elseif($surat->status === 'draft')
+                            <i class="bi bi-file-earmark-text text-secondary"></i>
+                        @elseif($surat->status === 'revisi')
+                            <i class="bi bi-pencil-square text-warning"></i>
+                        @elseif($surat->status === 'revisi_admin')
+                            <i class="bi bi-gear-fill" style="color:#6b21a8;"></i>
+                        @else
+                            <i class="bi bi-clock-history text-primary"></i>
+                        @endif
                     </div>
 
                     <div class="flex-1 min-w-0" style="flex:1;">
@@ -175,7 +187,7 @@
                             <div class="d-flex align-items-center gap-2 flex-shrink-0">
                                 @if($surat->status==='selesai')
                                     <div class="d-flex flex-column align-items-end">
-                                        <span class="badge rounded-pill" style="background:#dcfce7;color:#15803d;font-size:11px;padding:4px 10px;margin-bottom:2px;">✓ Selesai</span>
+                                        <span class="badge rounded-pill" style="background:#dcfce7;color:#15803d;font-size:11px;padding:4px 10px;margin-bottom:2px;"><i class="bi bi-check-lg me-1"></i>Selesai</span>
                                         @if(!is_null($surat->rating))
                                             <div style="font-size:10px;color:#d97706;font-weight:700;display:flex;align-items:center;gap:2px;">
                                                 <i class="bi bi-star-fill text-warning" style="font-size:10px;color:#f59e0b !important;"></i> {{ $surat->rating }}/5
@@ -183,17 +195,17 @@
                                         @endif
                                     </div>
                                 @elseif($surat->status==='ditolak')
-                                    <span class="badge rounded-pill" style="background:#fee2e2;color:#b91c1c;font-size:11px;padding:4px 10px;">✗ Ditolak</span>
+                                    <span class="badge rounded-pill" style="background:#fee2e2;color:#b91c1c;font-size:11px;padding:4px 10px;"><i class="bi bi-x-lg me-1"></i>Ditolak</span>
                                 @elseif($surat->status==='revisi')
-                                    <span class="badge rounded-pill" style="background:#fef3c7;color:#b45309;font-size:11px;padding:4px 10px;">📝 Revisi</span>
+                                    <span class="badge rounded-pill" style="background:#fef3c7;color:#b45309;font-size:11px;padding:4px 10px;"><i class="bi bi-pencil-square me-1"></i>Revisi</span>
                                 @elseif($surat->status==='revisi_admin')
-                                    <span class="badge rounded-pill" style="background:#f3e8ff;color:#6b21a8;font-size:11px;padding:4px 10px;">⚙️ Admin Revisi</span>
+                                    <span class="badge rounded-pill" style="background:#f3e8ff;color:#6b21a8;font-size:11px;padding:4px 10px;"><i class="bi bi-gear-fill me-1"></i>Admin Revisi</span>
                                 @elseif($surat->status==='draft')
-                                    <span class="badge rounded-pill" style="background:#f1f5f9;color:#64748b;font-size:11px;padding:4px 10px;">📄 Draf</span>
+                                    <span class="badge rounded-pill" style="background:#f1f5f9;color:#64748b;font-size:11px;padding:4px 10px;"><i class="bi bi-file-earmark me-1"></i>Draf</span>
                                 @elseif($surat->sla_status==='terlambat')
-                                    <span class="badge rounded-pill" style="background:#fee2e2;color:#b91c1c;font-size:11px;padding:4px 10px;">⚠ SLA Terlambat</span>
+                                    <span class="badge rounded-pill" style="background:#fee2e2;color:#b91c1c;font-size:11px;padding:4px 10px;"><i class="bi bi-exclamation-triangle-fill me-1"></i>SLA Terlambat</span>
                                 @else
-                                    <span class="badge rounded-pill" style="background:#dbeafe;color:#1d4ed8;font-size:11px;padding:4px 10px;">⏱ Proses</span>
+                                    <span class="badge rounded-pill" style="background:#dbeafe;color:#1d4ed8;font-size:11px;padding:4px 10px;"><i class="bi bi-clock-history me-1"></i>Proses</span>
                                 @endif
                                 @if($surat->status==='draft')
                                     <a href="{{ route('user.surat.edit', $surat) }}"

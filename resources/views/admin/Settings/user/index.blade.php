@@ -73,7 +73,7 @@
                 {{-- Submit --}}
                 <div>
                     <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        🔍 Cari
+                        <i class="bi bi-search me-1"></i> Cari
                     </button>
                 </div>
             </div>
@@ -81,7 +81,7 @@
             @if(request()->hasAny(['search', 'role', 'sort']))
                 <div style="text-align: right;">
                     <a href="{{ route('admin.users.index') }}" class="btn" style="font-size: 12px;">
-                        ✕ Reset Filter
+                        <i class="bi bi-x-lg me-1"></i> Reset Filter
                     </a>
                 </div>
             @endif
@@ -97,7 +97,7 @@
                 <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
                     <div style="display: flex; gap: 12px; align-items: center;">
                         <div style="width: 40px; height: 40px; border-radius: 10px; background: #ea580c; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
-                            🔑
+                            <i class="bi bi-key-fill"></i>
                         </div>
                         <div>
                             <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #9a3412;">
@@ -111,33 +111,33 @@
                                 <code id="textPasswordBaru" style="background: white; border: 1px solid #fed7aa; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 13.5px; color: #c2410c; font-family: monospace;">{{ session('reset_password') }}</code>
                                 <button type="button" onclick="salinPasswordReset()" id="btnSalinPassword"
                                         style="padding: 4px 10px; font-size: 11.5px; font-weight: 600; border-radius: 6px; background: #ea580c; color: white; border: none; cursor: pointer; transition: background .15s;">
-                                    📋 Salin Password
+                                    <i class="bi bi-clipboard me-1"></i> Salin Password
                                 </button>
                                 <span style="font-size: 11px; color: #9a3412; opacity: 0.85;">(Silakan salin dan berikan password ini kepada pegawai bersangkutan)</span>
                             </div>
                         </div>
                     </div>
-                    <button type="button" onclick="this.closest('div').parentElement.remove()" style="background: none; border: none; font-size: 16px; color: #9a3412; cursor: pointer; padding: 2px 6px;">✕</button>
+                    <button type="button" onclick="this.closest('div').parentElement.remove()" style="background: none; border: none; font-size: 14px; color: #9a3412; cursor: pointer; padding: 2px 6px;"><i class="bi bi-x-lg"></i></button>
                 </div>
             </div>
         @elseif(session('success'))
             <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 16px; font-size:13px; color:#166534; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
-                ✅ {{ session('success') }}
+                <i class="bi bi-check-circle-fill text-success"></i> {{ session('success') }}
             </div>
         @endif
         @if(session('error'))
             <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:10px 16px; font-size:13px; color:#b91c1c; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
-                ❌ {{ session('error') }}
+                <i class="bi bi-x-circle-fill text-danger"></i> {{ session('error') }}
             </div>
         @endif
 
         <div class="section-header" style="margin-bottom: 16px;">
-            <h2>📋 Data Pegawai / Pengguna</h2>
+            <h2><i class="bi bi-people-fill me-2"></i>Data Pegawai / Pengguna</h2>
             <div style="display:flex; align-items:center; gap:12px;">
                 <small>Total: {{ $users->total() }} pengguna</small>
                 <button type="button" onclick="document.getElementById('modalBuatAkun').style.display='flex'"
                     class="btn btn-primary" style="font-size:13px; padding:7px 16px; display:flex; align-items:center; gap:6px;">
-                    ➕ Buat Akun
+                    <i class="bi bi-person-plus-fill"></i> Buat Akun
                 </button>
             </div>
         </div>
@@ -192,7 +192,7 @@
                                     <div style="display: flex; gap: 6px; justify-content: center;">
                                         @if($user && $user->uuid)
                                             <a href="{{ route('admin.users.show', $user) }}" class="btn btn-sm" title="Lihat detail">
-                                                👁️
+                                                <i class="bi bi-eye"></i>
                                             </a>
                                         @endif
                                         @if($user && $user->id !== auth()->id())
@@ -201,7 +201,7 @@
                                                 <button type="button" class="btn btn-sm" title="Reset Password Pegawai (Kasubbag TU)"
                                                     style="color: #ea580c; background: #fff7ed; border-color: #fed7aa;"
                                                     onclick="bukaModalResetPassword('{{ $user->uuid }}', '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')">
-                                                    🔄
+                                                    <i class="bi bi-arrow-clockwise"></i>
                                                 </button>
                                             @endif
 
@@ -210,7 +210,7 @@
                                                 <button type="button" class="btn btn-sm" title="Ubah Role"
                                                     style="color: #1d4ed8;"
                                                     onclick="bukaModalUbahRole('{{ $user->uuid }}', '{{ addslashes($user->name) }}', '{{ $user->role }}')">
-                                                    🔑
+                                                    <i class="bi bi-key"></i>
                                                 </button>
                                             @endif
                                             <form method="POST" action="{{ route('admin.users.destroy', $user) }}" 
@@ -219,7 +219,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm" style="color: #b91c1c;" title="Hapus">
-                                                    🗑️
+                                                    <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
                                         @endif
@@ -317,20 +317,20 @@
 <div id="modalResetPassword" class="modal-backdrop" onclick="if(event.target===this) tutupModalResetPassword()">
     <div class="modal-box">
         <div class="modal-header" style="background: #fff7ed; border-bottom: 1px solid #fed7aa;">
-            <h3 style="color: #9a3412; display: flex; align-items: center; gap: 8px;">🔄 Reset Password Pengguna</h3>
-            <button type="button" class="modal-close" onclick="tutupModalResetPassword()">✕</button>
+            <h3 style="color: #9a3412; display: flex; align-items: center; gap: 8px;"><i class="bi bi-arrow-clockwise"></i> Reset Password Pengguna</h3>
+            <button type="button" class="modal-close" onclick="tutupModalResetPassword()"><i class="bi bi-x-lg"></i></button>
         </div>
 
         <form method="POST" id="formResetPassword">
             @csrf
             <div class="modal-body">
                 <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 14px; font-size:12px; color:#1e40af;">
-                    <div>👤 Pegawai: <strong id="labelResetNama">—</strong></div>
-                    <div style="font-size:11px; color:#3b82f6; margin-top:3px;">📧 Email: <span id="labelResetEmail">—</span></div>
+                    <div><i class="bi bi-person me-1"></i>Pegawai: <strong id="labelResetNama">—</strong></div>
+                    <div style="font-size:11px; color:#3b82f6; margin-top:3px;"><i class="bi bi-envelope me-1"></i>Email: <span id="labelResetEmail">—</span></div>
                 </div>
 
                 <div style="background:#fffbeb; border:1px solid #fef3c7; border-radius:8px; padding:10px 12px; font-size:11.5px; color:#92400e; line-height: 1.5;">
-                    💡 <em>Fitur ini diperuntukkan khusus Kasubbag TU untuk membantu pegawai yang lupa password di jaringan LAN kantor tanpa ketergantungan kirim email SMTP.</em>
+                    <i class="bi bi-info-circle me-1"></i><em>Fitur ini diperuntukkan khusus Kasubbag TU untuk membantu pegawai yang lupa password di jaringan LAN kantor tanpa ketergantungan kirim email SMTP.</em>
                 </div>
 
                 <div class="mf-group">
@@ -343,8 +343,8 @@
                     <div style="position:relative;">
                         <input class="mf-input" id="reset_password_input" type="text" name="password" required minlength="8"
                                placeholder="Minimal 8 karakter" value="Bpsuml2026!" style="padding-right: 40px; font-family: monospace; font-size: 13.5px; letter-spacing: 0.5px;">
-                        <button type="button" onclick="toggleLihatResetPassword(this)" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:14px;">
-                            👁️
+                        <button type="button" onclick="toggleLihatResetPassword(this)" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:14px; color:#6b7280;">
+                            <i class="bi bi-eye"></i>
                         </button>
                     </div>
                     <div class="mf-hint">Kasubbag TU dapat menentukan password custom atau menggunakan password default di atas.</div>
@@ -354,7 +354,7 @@
             <div class="modal-footer" style="background:#f9fafb;">
                 <button type="button" class="btn" onclick="tutupModalResetPassword()">Batal</button>
                 <button type="submit" class="btn" id="btnSubmitResetPassword" style="background:#ea580c; color:#fff; border:none; font-weight: 600;">
-                    🔄 Reset Password Sekarang
+                    <i class="bi bi-arrow-clockwise me-1"></i> Reset Password Sekarang
                 </button>
             </div>
         </form>
@@ -366,8 +366,8 @@
 <div id="modalUbahRole" class="modal-backdrop" onclick="if(event.target===this) tutupModalRole()">
     <div class="modal-box">
         <div class="modal-header">
-            <h3>🔑 Ubah Role Pengguna</h3>
-            <button type="button" class="modal-close" onclick="tutupModalRole()">✕</button>
+            <h3><i class="bi bi-key me-2"></i>Ubah Role Pengguna</h3>
+            <button type="button" class="modal-close" onclick="tutupModalRole()"><i class="bi bi-x-lg"></i></button>
         </div>
 
         <form method="POST" id="formUbahRole">
@@ -375,7 +375,7 @@
             @method('PATCH')
             <div class="modal-body">
                 <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 14px; font-size:12px; color:#1e40af; display:flex; align-items:center; gap:8px;">
-                    <span>👤</span>
+                    <span><i class="bi bi-person"></i></span>
                     <span>Mengubah role untuk: <strong id="labelNamaUser">—</strong></span>
                 </div>
 
@@ -394,7 +394,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn" onclick="tutupModalRole()">Batal</button>
                 <button type="submit" class="btn btn-primary" id="btnSubmitRole">
-                    💾 Simpan Role
+                    <i class="bi bi-floppy me-1"></i> Simpan Role
                 </button>
             </div>
         </form>
@@ -405,8 +405,8 @@
 <div id="modalBuatAkun" class="modal-backdrop" onclick="if(event.target===this) tutupModal()">
     <div class="modal-box">
         <div class="modal-header">
-            <h3>➕ Buat Akun Pengguna</h3>
-            <button type="button" class="modal-close" onclick="tutupModal()">✕</button>
+            <h3><i class="bi bi-person-plus me-2"></i>Buat Akun Pengguna</h3>
+            <button type="button" class="modal-close" onclick="tutupModal()"><i class="bi bi-x-lg"></i></button>
         </div>
 
         <form method="POST" action="{{ route('admin.users.store') }}" id="formBuatAkun">
@@ -447,7 +447,7 @@
                             style="padding-right: 40px;">
                         <button type="button" onclick="togglePassword('m_password', this)" 
                             style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#6b7280; font-size:16px; padding:2px 4px;"
-                            title="Tampilkan/sembunyikan password">👁️</button>
+                            title="Tampilkan/sembunyikan password"><i class="bi bi-eye"></i></button>
                     </div>
                     <span class="mf-hint">Minimal 8 karakter.</span>
                 </div>
@@ -461,7 +461,7 @@
                             style="padding-right: 40px;">
                         <button type="button" onclick="togglePassword('m_password_confirmation', this)" 
                             style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#6b7280; font-size:16px; padding:2px 4px;"
-                            title="Tampilkan/sembunyikan password">👁️</button>
+                            title="Tampilkan/sembunyikan password"><i class="bi bi-eye"></i></button>
                     </div>
                 </div>
 
@@ -493,7 +493,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn" onclick="tutupModal()">Batal</button>
                 <button type="submit" class="btn btn-primary" id="btnSubmitBuat">
-                    ✅ Buat Akun
+                    <i class="bi bi-check-lg me-1"></i> Buat Akun
                 </button>
             </div>
         </form>
@@ -514,10 +514,10 @@
         const input = document.getElementById(inputId);
         if (input.type === 'password') {
             input.type = 'text';
-            btn.textContent = '🙈';
+            btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
         } else {
             input.type = 'password';
-            btn.textContent = '👁️';
+            btn.innerHTML = '<i class="bi bi-eye"></i>';
         }
     }
 
@@ -540,7 +540,7 @@
     document.getElementById('formUbahRole').addEventListener('submit', function () {
         const btn = document.getElementById('btnSubmitRole');
         btn.disabled = true;
-        btn.textContent = '⏳ Menyimpan...';
+        btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Menyimpan...';
     });
 
     // NIP counter di dalam modal
@@ -565,7 +565,7 @@
     document.getElementById('formBuatAkun').addEventListener('submit', function () {
         const btn = document.getElementById('btnSubmitBuat');
         btn.disabled = true;
-        btn.textContent = '⏳ Memproses...';
+        btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Memproses...';
     });
 
     // ── Modal Reset Password (Kasubbag TU) ──
@@ -594,10 +594,10 @@
         if (!input) return;
         if (input.type === 'text') {
             input.type = 'password';
-            btn.textContent = '🙈';
+            btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
         } else {
             input.type = 'text';
-            btn.textContent = '👁️';
+            btn.innerHTML = '<i class="bi bi-eye"></i>';
         }
     }
 
@@ -607,7 +607,7 @@
             const btn = document.getElementById('btnSubmitResetPassword');
             if (btn) {
                 btn.disabled = true;
-                btn.textContent = '⏳ Memproses Reset...';
+                btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Memproses Reset...';
             }
         });
     }
@@ -619,9 +619,9 @@
         navigator.clipboard.writeText(text).then(() => {
             const btn = document.getElementById('btnSalinPassword');
             if (btn) {
-                const oldText = btn.innerText;
-                btn.innerText = '✅ Tersalin!';
-                setTimeout(() => { btn.innerText = oldText; }, 2500);
+                const oldHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Tersalin!';
+                setTimeout(() => { btn.innerHTML = oldHtml; }, 2500);
             }
         }).catch(() => {
             alert('Password: ' + text);

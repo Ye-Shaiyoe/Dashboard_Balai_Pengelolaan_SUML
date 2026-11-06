@@ -6,7 +6,7 @@
 <div class="d-flex align-items-center justify-content-between mb-4 animate-in">
     <div>
         <h5 class="fw-bold mb-0" style="color:#1e3a5f;">
-            📁 {{ $title }}
+            <i class="bi bi-folder2-open me-2"></i>{{ $title }}
         </h5>
         <small class="text-muted">Hapus file fisik untuk <strong> Keamanan sistem </strong>setelah proses selesai.</small>
     </div>
@@ -18,7 +18,7 @@
 {{-- ALERT INFO --}}
 <div class="alert alert-info border-0 shadow-sm mb-4 animate-in" style="border-radius:16px; background:#eff6ff; color:#1e40af; border-left: 5px solid #3b82f6 !important;">
     <div class="d-flex align-items-center gap-3 p-1">
-        <div style="font-size:24px;">💡</div>
+        <div style="font-size:24px; color:#3b82f6;"><i class="bi bi-lightbulb-fill"></i></div>
         <div style="font-size:13px;">
             Hanya surat dengan status <strong>Selesai</strong> yang muncul di sini. Menghapus file fisik <strong>tidak akan menghapus</strong> data tracking atau riwayat surat Anda.
         </div>

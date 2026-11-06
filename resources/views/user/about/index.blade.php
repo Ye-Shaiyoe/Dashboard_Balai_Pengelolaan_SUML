@@ -564,17 +564,17 @@
                     </div>
 
                     <div class="tm-wrap">
-                        <div class="tm-label">⚙ Backend & Database</div>
+                        <div class="tm-label"><i class="bi bi-gear-wide-connected me-1"></i> Backend & Database</div>
                         <div class="tm-track">
                             <div class="tm-row go-right" id="tm-row1"></div>
                         </div>
 
-                        <div class="tm-label">🎨 Frontend & UI</div>
+                        <div class="tm-label"><i class="bi bi-palette me-1"></i> Frontend & UI</div>
                         <div class="tm-track">
                             <div class="tm-row go-left" id="tm-row2"></div>
                         </div>
 
-                        <div class="tm-label">🚀 DevOps, AI & Tooling</div>
+                        <div class="tm-label"><i class="bi bi-rocket-takeoff me-1"></i> DevOps, AI & Tooling</div>
                         <div class="tm-track">
                             <div class="tm-row go-right2" id="tm-row3"></div>
                         </div>

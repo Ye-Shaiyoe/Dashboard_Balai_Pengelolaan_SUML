@@ -10,7 +10,7 @@
         <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 16px 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
                 <div style="display: flex; align-items: flex-start; gap: 12px;">
-                    <span style="font-size: 24px; line-height: 1;">✅</span>
+                    <span style="font-size: 24px; line-height: 1; color: #16a34a;"><i class="bi bi-check-circle-fill"></i></span>
                     <div>
                         <h4 style="margin: 0 0 6px 0; color: #15803d; font-size: 15px; font-weight: 700;">Password Berhasil Direset!</h4>
                         <p style="margin: 0 0 8px 0; font-size: 13px; color: #166534;">
@@ -20,7 +20,7 @@
                             <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #6b7280; letter-spacing: 0.05em;">Password Baru:</span>
                             <code id="passwordResetBaru" style="font-size: 15px; font-weight: 700; color: #047857; letter-spacing: 1px;">{{ session('reset_password') }}</code>
                             <button type="button" onclick="salinPasswordReset()" style="background: #15803d; color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">
-                                📋 Salin Password
+                                <i class="bi bi-clipboard me-1"></i> Salin Password
                             </button>
                         </div>
                     </div>
@@ -56,11 +56,11 @@
                         onclick="bukaModalResetPassword('{{ $user->uuid }}', '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
                         class="btn" 
                         style="background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 12px; padding: 10px 18px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-                    🔄 Reset Password
+                    <i class="bi bi-arrow-clockwise"></i> Reset Password
                 </button>
             @endif
             <a href="{{ route('admin.users.index') }}" class="btn btn-secondary" style="border-radius: 12px; padding: 10px 20px;">
-                ← Kembali
+                <i class="bi bi-arrow-left me-1"></i> Kembali
             </a>
         </div>
     </div>
@@ -94,7 +94,7 @@
     @if($user->signature_path)
         <div class="card" style="background: linear-gradient(135deg, #f0f4ff 0%, #f9f5ff 100%); border: 1px solid #e0e7ff;">
             <div class="section-header" style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 24px;">✍️</span>
+                <span style="font-size: 22px; color: #4f46e5;"><i class="bi bi-pen-fill"></i></span>
                 <h2 style="margin: 0;">Tanda Tangan Elektronik (TTE)</h2>
                 <span class="badge badge-green" style="font-size: 11px; padding: 4px 8px;">Terverifikasi</span>
             </div>
@@ -117,7 +117,7 @@
                 {{-- Signature Info & Security Status --}}
                 <div style="display: flex; flex-direction: column; gap: 16px;">
                     <div style="background: white; border-radius: 8px; padding: 12px; border-left: 4px solid #4361ee;">
-                        <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #1f2937;">🔒 Status Keamanan</h4>
+                        <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #1f2937;"><i class="bi bi-shield-lock me-1"></i> Status Keamanan</h4>
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                             <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite;"></span>
                             <span style="font-size: 12px; color: #059669;"><strong>TTD Terverifikasi</strong></span>
@@ -128,17 +128,17 @@
                     </div>
 
                     <div style="background: white; border-radius: 8px; padding: 12px; border-left: 4px solid #f59e0b;">
-                        <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #1f2937;">🔑 PIN Perlindungan</h4>
+                        <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #1f2937;"><i class="bi bi-key me-1"></i> PIN Perlindungan</h4>
                         <p style="font-size: 12px; color: #6b7280; margin: 0;">
                             TTD ini dilindungi dengan PIN terenkripsi. Admin tidak dapat melihat PIN pengguna untuk keamanan maksimal.
                         </p>
                         <div style="margin-top: 8px; padding: 8px; background: #fef3c7; border-radius: 4px; border-left: 2px solid #f59e0b;">
-                            <span style="font-size: 11px; color: #92400e;">⚠️ PIN hanya diketahui oleh pengguna untuk autentikasi dokumen</span>
+                            <span style="font-size: 11px; color: #92400e;"><i class="bi bi-exclamation-triangle-fill me-1"></i> PIN hanya diketahui oleh pengguna untuk autentikasi dokumen</span>
                         </div>
                     </div>
 
                     <div style="background: white; border-radius: 8px; padding: 12px; border-left: 4px solid #6366f1;">
-                        <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #1f2937;">📋 Informasi File</h4>
+                        <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #1f2937;"><i class="bi bi-file-earmark-text me-1"></i> Informasi File</h4>
                         <p style="font-size: 12px; color: #6b7280; margin: 0;">
                             <strong>Format:</strong> PNG (Transparent)<br>
                             <strong>Path:</strong> <code style="background: #f3f4f6; padding: 2px 4px; border-radius: 3px; font-size: 11px;">{{ basename($user->signature_path) }}</code><br>
@@ -151,7 +151,7 @@
 
             {{-- Usage Info --}}
             <div style="margin-top: 16px; padding: 12px; background: white; border-radius: 8px; border-left: 4px solid #8b5cf6;">
-                <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #1f2937;">📝 Penggunaan TTD</h4>
+                <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #1f2937;"><i class="bi bi-pencil-square me-1"></i> Penggunaan TTD</h4>
                 <p style="font-size: 12px; color: #6b7280; margin: 0;">
                     Tanda tangan ini akan ditampilkan pada:
                 </p>
@@ -165,7 +165,7 @@
     @else
         <div class="card" style="border: 1px solid #fee2e2; background: #fef2f2;">
             <div style="display: flex; align-items: center; gap: 12px; padding: 16px; text-align: center;">
-                <span style="font-size: 32px;">✍️</span>
+                <span style="font-size: 32px; color: #dc2626;"><i class="bi bi-pen"></i></span>
                 <div>
                     <h3 style="margin: 0 0 4px 0; color: #991b1b; font-size: 14px;"><strong>Tanda Tangan Belum Ditambahkan</strong></h3>
                     <p style="margin: 0; font-size: 12px; color: #7f1d1d;">
@@ -179,7 +179,7 @@
     {{-- SURAT HISTORY --}}
     <div class="card">
         <div class="section-header" style="margin-bottom: 16px;">
-            <h2>📄 Riwayat Surat</h2>
+            <h2><i class="bi bi-file-earmark-text me-2"></i>Riwayat Surat</h2>
             <small>Total: {{ $user->surats->count() }} surat</small>
         </div>
 
@@ -237,7 +237,7 @@
                                 </td>
                                 <td style="text-align: center;">
                                     <a href="{{ route('admin.surat.show', $surat) }}" class="btn btn-sm" title="Lihat detail">
-                                        👁️
+                                        <i class="bi bi-eye"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -258,7 +258,7 @@
             <div style="background: white; border-radius: 16px; max-width: 460px; width: 100%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); overflow: hidden; animation: modalPop 0.2s ease-out;">
                 <div style="padding: 20px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #fafafa;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 20px;">🔐</span>
+                        <span style="font-size: 20px; color: #ea580c;"><i class="bi bi-lock-fill"></i></span>
                         <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #111827;">Reset Password Pegawai</h3>
                     </div>
                     <button type="button" onclick="tutupModalResetPassword()" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #9ca3af; line-height: 1;">&times;</button>
@@ -267,7 +267,7 @@
                     @csrf
                     <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
                         <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; font-size: 12px; color: #92400e; line-height: 1.5;">
-                            ⚠️ <strong>Otoritas Kasubbag TU</strong>: Password pegawai akan langsung diganti di database tanpa verifikasi email (solusi SMTP LAN terblokir).
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> <strong>Otoritas Kasubbag TU</strong>: Password pegawai akan langsung diganti di database tanpa verifikasi email (solusi SMTP LAN terblokir).
                         </div>
                         <div>
                             <label style="font-size: 12px; font-weight: 600; color: #4b5563;">Pegawai yang di-reset:</label>
@@ -287,8 +287,8 @@
                                 <input type="password" id="inputPasswordBaru" name="password" required minlength="8"
                                        placeholder="Minimal 8 karakter"
                                        style="width: 100%; box-sizing: border-box; padding: 10px 40px 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: monospace;">
-                                <button type="button" onclick="toggleLihatResetPassword()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #6b7280;">
-                                    👁️
+                                <button type="button" id="btnToggleLihatReset" onclick="toggleLihatResetPassword()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #6b7280;">
+                                    <i class="bi bi-eye"></i>
                                 </button>
                             </div>
                             <small style="color: #6b7280; font-size: 11px; margin-top: 4px; display: block;">
@@ -318,6 +318,7 @@
         var nameSpan = document.getElementById('resetTargetName');
         var emailSpan = document.getElementById('resetTargetEmail');
         var passInput = document.getElementById('inputPasswordBaru');
+        var btn = document.getElementById('btnToggleLihatReset');
 
         if (!modal || !form) return;
 
@@ -326,6 +327,7 @@
         emailSpan.textContent = userEmail;
         passInput.value = 'Bpsuml2026!';
         passInput.type = 'text';
+        if (btn) btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
 
         modal.style.display = 'flex';
     }
@@ -342,8 +344,15 @@
 
     function toggleLihatResetPassword() {
         var passInput = document.getElementById('inputPasswordBaru');
+        var btn = document.getElementById('btnToggleLihatReset');
         if (!passInput) return;
-        passInput.type = passInput.type === 'password' ? 'text' : 'password';
+        if (passInput.type === 'password') {
+            passInput.type = 'text';
+            if (btn) btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+        } else {
+            passInput.type = 'password';
+            if (btn) btn.innerHTML = '<i class="bi bi-eye"></i>';
+        }
     }
 
     function salinPasswordReset() {

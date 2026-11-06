@@ -12,7 +12,7 @@
                 <i class="bi bi-arrow-left"></i>
             </a>
             <div>
-                <h5 class="fw-bold mb-0" style="color:#111827;">✏️ Edit Draft Surat</h5>
+                <h5 class="fw-bold mb-0" style="color:#111827;"><i class="bi bi-pencil-square me-2 text-primary"></i>Edit Draft Surat</h5>
                 <small class="text-muted">Lengkapi draf surat Anda sebelum diajukan</small>
             </div>
         </div>
@@ -21,7 +21,7 @@
             <div class="card shadow-sm border-0 animate-in" style="border-radius:16px; background: white; overflow: hidden; animation-delay: 0.1s;">
                 <div style="height: 10px; background: #f59e0b;"></div>
                 <div class="card-body p-5 text-center">
-                    <div style="font-size:64px; margin-bottom:20px;">⏰</div>
+                    <div style="font-size:64px; margin-bottom:20px; color:#f59e0b;"><i class="bi bi-clock-history"></i></div>
                     <h4 class="fw-bold mb-3" style="color:#1e293b;">Oopss! Layanan Tutup</h4>
                     <p class="text-muted mb-4" style="font-size:15px; line-height:1.6;">
                         Mohon maaf, layanan pengajuan dan edit draf surat dinonaktifkan sementara.<br>

@@ -112,11 +112,11 @@
                         <span class="badge badge-purple">{{ $surat->jenis_label }}</span>
                         @if($surat->sifat === 'segera') <span class="badge badge-red">Segera</span> @endif
                         @if($surat->status === 'selesai') <span class="badge badge-green">Selesai</span> @endif
-                        @if($surat->status === 'revisi') <span class="badge badge-amber">📝 File Revisi Baru</span> @endif
+                        @if($surat->status === 'revisi') <span class="badge badge-amber"><i class="bi bi-pencil-square me-1"></i>File Revisi Baru</span> @endif
                         @if($surat->status === 'revisi_admin') <span class="badge" style="background:rgba(251,191,36,0.1);color:#f59e0b;border:1px solid #fbbf24;">Admin Revisi</span> @endif
                         <span class="badge {{ $surat->revisi_count > 0 ? 'badge-light text-orange' : 'badge-info text-orange' }}"> Revisi ke: {{ $surat->revisi_count }} </span>                    </div>
                 </div>
-                <a href="{{ route('admin.surat.index') }}" class="btn btn-sm btn-outline-secondary">← Kembali</a>
+                <a href="{{ route('admin.surat.index') }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Kembali</a>
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; font-size:13px;">
@@ -340,7 +340,7 @@
                         style="flex:1; cursor:pointer; border:2px solid #fca5a5; border-radius:10px; padding:10px 12px; display:flex; align-items:flex-start; gap:8px; transition:all 0.2s; background:rgba(239,68,68,0.1);">
                         <input type="radio" name="_jenis_tolak_ui" value="ke_user" checked style="margin-top:3px; accent-color:#ef4444;">
                         <div>
-                            <div style="font-size:12px; font-weight:700; color:#ef4444;">↩ Kembalikan ke User</div>
+                            <div style="font-size:12px; font-weight:700; color:#ef4444;"><i class="bi bi-arrow-return-left me-1"></i>Kembalikan ke User</div>
                             <div style="font-size:10px; color:var(--text-secondary); margin-top:2px; line-height:1.3;">User diminta revisi / upload ulang file</div>
                         </div>
                     </label>
@@ -349,7 +349,7 @@
                         style="flex:1; cursor:pointer; border:2px solid var(--border-color); border-radius:10px; padding:10px 12px; display:flex; align-items:flex-start; gap:8px; transition:all 0.2s; background:var(--bg-tertiary);">
                         <input type="radio" name="_jenis_tolak_ui" value="ke_admin_aspirasi" style="margin-top:3px; accent-color:#f59e0b;">
                         <div>
-                            <div style="font-size:12px; font-weight:700; color:var(--text-primary); opacity:0.7;">🔄 Revisi Admin Arsiparis</div>
+                            <div style="font-size:12px; font-weight:700; color:var(--text-primary); opacity:0.7;"><i class="bi bi-arrow-repeat me-1"></i>Revisi Admin Arsiparis</div>
                             <div style="font-size:10px; color:var(--text-secondary); margin-top:2px; line-height:1.3;">Dikembalikan ke Admin Arsiparis (Tahap 2)</div>
                         </div>
                     </label>

@@ -6,7 +6,7 @@
 <div class="card" style="margin-bottom:16px;">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
         <div>
-            <h2 style="margin:0;">📁 Manajemen File Fisik Surat</h2>
+            <h2 style="margin:0;"><i class="bi bi-folder2 me-2"></i>Manajemen File Fisik Surat</h2>
             <small style="color:var(--text-secondary);">Hapus file fisik untuk menghemat ruang penyimpanan setelah proses selesai.</small>
         </div>
         <form action="{{ route('admin.file.massDelete') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus SEMUA file fisik dari surat yang sudah Selesai/Ditolak?')">
@@ -42,7 +42,7 @@
         </div>
 
         <div style="display:flex; gap:6px;">
-            <button type="submit" class="btn btn-primary">🔍 Filter</button>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>Filter</button>
             <a href="{{ route('admin.file.index') }}" class="btn">Reset</a>
         </div>
     </form>
@@ -52,7 +52,7 @@
 <div class="card">
     @if($surats->isEmpty())
         <div style="text-align:center; padding:40px; color:var(--text-secondary); font-size:13px;">
-            📭 Tidak ada surat dengan file fisik yang ditemukan
+            <i class="bi bi-inbox me-2"></i>Tidak ada surat dengan file fisik yang ditemukan
         </div>
     @else
         <div class="table-wrap">

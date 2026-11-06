@@ -5,7 +5,7 @@
 
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2 animate-in">
     <div>
-        <h5 class="fw-bold mb-0" style="color:#1e3a5f;">📊 {{ $title }}</h5>
+        <h5 class="fw-bold mb-0" style="color:#1e3a5f;"><i class="bi bi-table me-2"></i>{{ $title }}</h5>
         <small class="text-muted">{{ request('status') === 'draft' ? 'Data draf surat dalam format tabel detail' : 'Data surat dalam format tabel detail' }}</small>
     </div>
     <div class="d-flex gap-2">
@@ -169,7 +169,7 @@
                                 <div class="mb-2">
                                     @if($surat->status === 'selesai')
                                         <div class="d-flex flex-column align-items-start">
-                                            <span class="badge rounded-pill" style="background:#dcfce7; color:#15803d; font-size:10px; margin-bottom:2px;">✓ Selesai</span>
+                                            <span class="badge rounded-pill" style="background:#dcfce7; color:#15803d; font-size:10px; margin-bottom:2px;"><i class="bi bi-check-lg me-1"></i>Selesai</span>
                                             @if(!is_null($surat->rating))
                                                 <div style="font-size:10px;color:#d97706;font-weight:700;display:flex;align-items:center;gap:2px;">
                                                     <i class="bi bi-star-fill text-warning" style="font-size:10px;color:#f59e0b !important;"></i> {{ $surat->rating }}/5
@@ -177,13 +177,13 @@
                                             @endif
                                         </div>
                                     @elseif($surat->status === 'ditolak')
-                                        <span class="badge rounded-pill" style="background:#fee2e2; color:#b91c1c; font-size:10px;">✗ Ditolak</span>
+                                        <span class="badge rounded-pill" style="background:#fee2e2; color:#b91c1c; font-size:10px;"><i class="bi bi-x-lg me-1"></i>Ditolak</span>
                                     @elseif(in_array($surat->status, ['revisi', 'revisi_admin']))
-                                        <span class="badge rounded-pill" style="background:#fef3c7; color:#b45309; font-size:10px;">📝 Revisi</span>
+                                        <span class="badge rounded-pill" style="background:#fef3c7; color:#b45309; font-size:10px;"><i class="bi bi-pencil-square me-1"></i>Revisi</span>
                                     @elseif($surat->status === 'draft')
-                                        <span class="badge rounded-pill" style="background:#f1f5f9; color:#64748b; font-size:10px;">📄 Draf</span>
+                                        <span class="badge rounded-pill" style="background:#f1f5f9; color:#64748b; font-size:10px;"><i class="bi bi-file-earmark me-1"></i>Draf</span>
                                     @else
-                                        <span class="badge rounded-pill" style="background:#dbeafe; color:#1d4ed8; font-size:10px;">⏱ Proses</span>
+                                        <span class="badge rounded-pill" style="background:#dbeafe; color:#1d4ed8; font-size:10px;"><i class="bi bi-clock-history me-1"></i>Proses</span>
                                     @endif
                                 </div>
 

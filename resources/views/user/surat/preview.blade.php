@@ -7,7 +7,7 @@
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
             <div>
                 <h5 class="fw-bold mb-1" style="color:var(--text-primary);">
-                    📄 Preview Dokumen - {{ $surat->judul }}
+                    <i class="bi bi-file-earmark-text me-2"></i>Preview Dokumen - {{ $surat->judul }}
                 </h5>
                 <p class="text-muted mb-0" style="font-size:13px;">
                     File: <strong>{{ $fileName ?? '—' }}</strong>
@@ -15,7 +15,7 @@
             </div>
             <div class="d-flex gap-2">
                 <a href="{{ route('user.surat.show', $surat) }}" class="btn btn-sm btn-light" style="border-radius:8px;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);">
-                    ← Kembali
+                    <i class="bi bi-arrow-left me-1"></i> Kembali
                 </a>
                 <a href="{{ route('user.surat.download', [$surat, $tipe]) }}" class="btn btn-sm btn-primary" style="border-radius:8px;">
                     <i class="bi bi-download me-1"></i> Unduh File
@@ -46,7 +46,7 @@
 
         @else
             <div style="padding:60px; text-align:center; color:var(--text-secondary);">
-                <div style="font-size:48px; margin-bottom:16px;">📄</div>
+                <div style="font-size:48px; margin-bottom:16px;"><i class="bi bi-file-earmark-text text-secondary"></i></div>
                 <div style="font-size:14px; margin-bottom:20px;">Preview tidak tersedia untuk format ini.</div>
                 <a href="{{ route('user.surat.download', [$surat, $tipe]) }}" class="btn btn-primary" style="border-radius:8px;">
                     <i class="bi bi-download me-1"></i> Unduh File Sekarang

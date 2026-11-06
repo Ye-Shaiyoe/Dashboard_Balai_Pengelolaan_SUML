@@ -426,7 +426,7 @@ function loadCharts() {
     .catch(err => {
       if (err.name === 'AbortError') return;
       console.error('Chart error:', err);
-      debug.textContent = '⚠ Gagal load data: ' + err.message + '. Buka DevTools → Network untuk detail.';
+      debug.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Gagal load data: ' + err.message + '. Buka DevTools → Network untuk detail.';
       debug.style.display = 'block';
     })
     .finally(() => {

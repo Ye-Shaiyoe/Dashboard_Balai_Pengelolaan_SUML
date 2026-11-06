@@ -52,17 +52,17 @@
                                 {{ ucfirst($surat->sifat) }}
                             </span>
                             @if($surat->status === 'selesai')
-                                <span class="badge rounded-pill" style="background:#dcfce7;color:#15803d;font-size:11px;">✓ Selesai</span>
+                                <span class="badge rounded-pill" style="background:#dcfce7;color:#15803d;font-size:11px;"><i class="bi bi-check-lg me-1"></i>Selesai</span>
                             @elseif($surat->status === 'ditolak')
-                                <span class="badge rounded-pill" style="background:#fee2e2;color:#b91c1c;font-size:11px;">✗ Ditolak</span>
+                                <span class="badge rounded-pill" style="background:#fee2e2;color:#b91c1c;font-size:11px;"><i class="bi bi-x-lg me-1"></i>Ditolak</span>
                             @elseif($surat->status === 'revisi')
-                                <span class="badge rounded-pill" style="background:#fef3c7;color:#b45309;font-size:11px;">📝 Revisi</span>
+                                <span class="badge rounded-pill" style="background:#fef3c7;color:#b45309;font-size:11px;"><i class="bi bi-pencil-square me-1"></i>Revisi</span>
                             @elseif($surat->status === 'revisi_admin')
-                                <span class="badge rounded-pill" style="background:#f3e8ff;color:#6b21a8;font-size:11px;">⚙️ Admin Revisi</span>
+                                <span class="badge rounded-pill" style="background:#f3e8ff;color:#6b21a8;font-size:11px;"><i class="bi bi-gear-fill me-1"></i>Admin Revisi</span>
                             @elseif($surat->status === 'draft')
-                                <span class="badge rounded-pill" style="background:#f1f5f9;color:#64748b;font-size:11px;">📄 Draf</span>
+                                <span class="badge rounded-pill" style="background:#f1f5f9;color:#64748b;font-size:11px;"><i class="bi bi-file-earmark me-1"></i>Draf</span>
                             @else
-                                <span class="badge rounded-pill" style="background:#dbeafe;color:#1d4ed8;font-size:11px;">⏱ Diproses</span>
+                                <span class="badge rounded-pill" style="background:#dbeafe;color:#1d4ed8;font-size:11px;"><i class="bi bi-clock-history me-1"></i>Diproses</span>
                             @endif
                         </div>
                     </div>
@@ -502,7 +502,7 @@
         {{-- RINGKASAN TAHAPAN --}}
         <div class="card card-custom mb-3">
             <div class="card-body p-4">
-                <h6 class="fw-bold mb-3" style="color:var(--text-primary);font-size:13px;">📋 Ringkasan Tahapan</h6>
+                <h6 class="fw-bold mb-3" style="color:var(--text-primary);font-size:13px;"><i class="bi bi-list-check me-2"></i>Ringkasan Tahapan</h6>
                 @foreach($surat->tahapans as $tahapan)
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <div style="
@@ -511,9 +511,9 @@
                             background:{{ $tahapan->status === 'selesai' ? '#dcfce7' : ($tahapan->status === 'proses' ? '#dbeafe' : ($tahapan->status === 'ditolak' ? '#fee2e2' : '#f3f4f6')) }};
                             color:{{ $tahapan->status === 'selesai' ? '#15803d' : ($tahapan->status === 'proses' ? '#1d4ed8' : ($tahapan->status === 'ditolak' ? '#b91c1c' : '#9ca3af')) }};
                         ">
-                            @if($tahapan->status === 'selesai') ✓
-                            @elseif($tahapan->status === 'proses') →
-                            @elseif($tahapan->status === 'ditolak') ✗
+                            @if($tahapan->status === 'selesai') <i class="bi bi-check-lg"></i>
+                            @elseif($tahapan->status === 'proses') <i class="bi bi-arrow-right"></i>
+                            @elseif($tahapan->status === 'ditolak') <i class="bi bi-x-lg"></i>
                             @else {{ $tahapan->tahap }}
                             @endif
                         </div>
@@ -536,9 +536,9 @@
                 <div style="font-size:12px;font-weight:600;
                     color:{{ $surat->sla_status==='terlambat' ? '#b91c1c' : '#1d4ed8' }};margin-bottom:4px;">
                     @if($surat->sla_status==='terlambat')
-                        ⚠ SLA Terlampaui!
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> SLA Terlampaui!
                     @else
-                        ⏱ SLA 1 Hari Kerja
+                        <i class="bi bi-clock-history me-1"></i> SLA 1 Hari Kerja
                     @endif
                 </div>
                 <div style="font-size:12px;color:var(--text-primary);">

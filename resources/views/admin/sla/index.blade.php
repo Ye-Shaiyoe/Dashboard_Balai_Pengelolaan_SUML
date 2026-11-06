@@ -102,9 +102,9 @@
             <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Status SLA</label>
             <select name="status_sla" class="form-select text-xs py-2 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg">
                 <option value="">Semua Status SLA</option>
-                <option value="terlambat" {{ $statusSla === 'terlambat' ? 'selected' : '' }}>🔴 Terlambat SLA</option>
-                <option value="ok" {{ $statusSla === 'ok' ? 'selected' : '' }}>🟢 Tepat Waktu</option>
-                <option value="proses" {{ $statusSla === 'proses' ? 'selected' : '' }}>🔵 Dalam Proses</option>
+                <option value="terlambat" {{ $statusSla === 'terlambat' ? 'selected' : '' }}>Terlambat SLA</option>
+                <option value="ok" {{ $statusSla === 'ok' ? 'selected' : '' }}>Tepat Waktu</option>
+                <option value="proses" {{ $statusSla === 'proses' ? 'selected' : '' }}>Dalam Proses</option>
             </select>
         </div>
 
